@@ -1,0 +1,12 @@
+.env
+venv/
+__pycache__/
+*.pyc
+media/
+node_modules/
+frontend/dist/
+frontend/.env
+cookies.txt
+db.sqlite3
+staticfiles/
+frontend/.env.production
