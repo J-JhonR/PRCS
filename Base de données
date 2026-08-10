@@ -1,0 +1,58 @@
+-- Création de la base de données
+CREATE DATABASE IF NOT EXISTS portail_recrutement;
+
+USE portail_recrutement;
+
+-- Table des candidats
+CREATE TABLE candidat (
+    id_candidat INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    prenom VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    mot_de_passe VARCHAR(255) NOT NULL,
+    cv TEXT,
+    date_inscription DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Table des recruteurs
+CREATE TABLE recruteur (
+    id_recruteur INT AUTO_INCREMENT PRIMARY KEY,
+    nom_entreprise VARCHAR(150) NOT NULL,
+    nom_recruteur VARCHAR(100),
+    email VARCHAR(150) UNIQUE NOT NULL,
+    mot_de_passe VARCHAR(255) NOT NULL,
+    date_creation DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Table des offres d'emploi
+CREATE TABLE offre (
+    id_offre INT AUTO_INCREMENT PRIMARY KEY,
+    titre_poste VARCHAR(200) NOT NULL,
+    description TEXT,
+    lieu VARCHAR(100),
+    date_publication DATETIME DEFAULT CURRENT_TIMESTAMP,
+    id_recruteur INT,
+    FOREIGN KEY (id_recruteur) REFERENCES recruteur(id_recruteur) ON DELETE CASCADE
+);
+
+-- Table des candidatures
+CREATE TABLE candidature (
+    id_candidature INT AUTO_INCREMENT PRIMARY KEY,
+    id_candidat INT,
+    id_offre INT,
+    statut ENUM('En attente', 'Acceptée', 'Rejetée') DEFAULT 'En attente',
+    date_candidature DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_candidat) REFERENCES candidat(id_candidat) ON DELETE CASCADE,
+    FOREIGN KEY (id_offre) REFERENCES offre(id_offre) ON DELETE CASCADE
+);
+
+-- Table des entretiens
+CREATE TABLE entretien (
+    id_entretien INT AUTO_INCREMENT PRIMARY KEY,
+    id_candidature INT,
+    date_entretien DATETIME NOT NULL,
+    lieu VARCHAR(100),
+    commentaire TEXT,
+    FOREIGN KEY (id_candidature) REFERENCES candidature(id_candidature) ON DELETE CASCADE
+);
+
