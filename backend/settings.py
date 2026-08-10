@@ -92,6 +92,13 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+_db_options: dict = {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"}
+if _env_bool('DB_SSL_REQUIRED', False):
+    # Aiven / TiDB Cloud (et la plupart des MySQL manages) exigent une connexion TLS.
+    # DB_SSL_CA : chemin vers le certificat CA fourni par l'hebergeur (optionnel selon le fournisseur).
+    _db_ssl_ca = os.getenv('DB_SSL_CA')
+    _db_options['ssl'] = {'ca': _db_ssl_ca} if _db_ssl_ca else {'ssl_mode': 'REQUIRED'}
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -100,9 +107,7 @@ DATABASES = {
         'PASSWORD': os.environ['DB_PASSWORD'],
         'HOST': os.environ['DB_HOST'],
         'PORT': os.environ['DB_PORT'],
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
-        }
+        'OPTIONS': _db_options,
     }
 }
 
@@ -129,9 +134,14 @@ REST_FRAMEWORK = {
 CSRF_TRUSTED_ORIGINS = _env_list("CSRF_TRUSTED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
 
 # Cookies / transport security
+# COOKIE_SAMESITE=None est indispensable quand le frontend et le backend sont
+# sur des domaines differents (ex: Vercel + Render) : sans ca, le navigateur
+# n'envoie jamais le cookie de session sur les requetes cross-site, et l'API
+# repond 401/403 partout meme apres une connexion "reussie". En local
+# (meme domaine "localhost"), "Lax" reste le choix par defaut, plus strict.
 SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SAMESITE = "Lax"
-CSRF_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SAMESITE = os.getenv("COOKIE_SAMESITE", "Lax")
+CSRF_COOKIE_SAMESITE = os.getenv("COOKIE_SAMESITE", "Lax")
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 SECURE_BROWSER_XSS_FILTER = True

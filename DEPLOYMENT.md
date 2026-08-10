@@ -1,82 +1,99 @@
-# Publier PRCS sur GitHub et en ligne gratuitement
+# Deployer PRCS en ligne gratuitement (demo de soutenance)
 
-Ce guide explique comment publier le code source sur GitHub, puis rendre le
-site accessible en ligne gratuitement, pour le présenter (ex: à un professeur).
+Stack recommandee, entierement gratuite, sans carte bancaire :
 
-## 1. Publier le code sur GitHub
+| Partie | Hebergeur | Pourquoi |
+|---|---|---|
+| Frontend (React/Vite) | **Vercel** ou **Netlify** | Connexion directe avec votre compte GitHub, deploiement automatique a chaque push |
+| Backend (Django API) | **Render** ou **Koyeb** | Free tier, connexion GitHub, detecte `Procfile` automatiquement |
+| Base de donnees MySQL | **TiDB Cloud Serverless** (recommande) ou **Aiven** | Compatibles MySQL (le driver `mysqlclient` de Django s'y connecte sans rien changer au code) |
 
-Le dépôt Git local est déjà initialisé et le code est prêt (`.env` et les
-secrets ne seront jamais envoyés, ils sont exclus via `.gitignore`).
+Le code est deja pret pour cette stack (voir section "Ce qui est deja configure").
+Verifiez toujours les conditions du free tier au moment de l'inscription, ces
+offres evoluent regulierement.
 
-1. Créez un compte sur [github.com](https://github.com) si vous n'en avez pas.
-2. Cliquez sur **New repository**, nommez-le par exemple `prcs`, laissez-le
-   **Public** (pour un lien accessible gratuitement), ne cochez aucune case
-   d'initialisation (pas de README/licence — le dépôt local en a déjà).
-3. Copiez l'URL du dépôt vide qui s'affiche (ex: `https://github.com/votre-nom/prcs.git`).
-4. Dans le terminal, à la racine du projet :
+## 1. Base de donnees MySQL gratuite
 
-```bash
-git add .
-git commit -m "Version initiale de PRCS"
-git branch -M main
-git remote add origin https://github.com/votre-nom/prcs.git
-git push -u origin main
-```
+### Option A — TiDB Cloud Serverless
+1. Creez un compte sur [tidbcloud.com](https://tidbcloud.com), creez un cluster **Serverless** (gratuit).
+2. Dans **Connect**, choisissez "General" / mysqlclient : vous obtenez `HOST`, `PORT` (4000), `USER`, `PASSWORD`, `DATABASE`.
+3. Notez ces valeurs, TiDB exige TLS (voir variables `DB_SSL_*` plus bas).
 
-Le lien `https://github.com/votre-nom/prcs` est votre lien de présentation du
-code, gratuit et public.
+### Option B — Aiven
+1. Creez un compte sur [aiven.io](https://aiven.io), creez un service **MySQL**.
+2. Recuperez `Host`, `Port`, `User`, `Password`, `Database name` dans l'onglet **Overview**.
+3. Telechargez le certificat CA fourni (necessaire pour `DB_SSL_CA`).
 
-## 2. Héberger le backend gratuitement (PythonAnywhere)
+## 2. Backend Django sur Render (ou Koyeb)
 
-[PythonAnywhere](https://www.pythonanywhere.com) offre un compte gratuit
-permanent avec une base MySQL gratuite incluse — pas besoin de changer de base
-de données.
+1. Sur [render.com](https://render.com), **New +** → **Web Service** → connectez le
+   depot GitHub `PRCS`.
+2. **Build Command** : `pip install -r requirements.txt`
+   **Start Command** : `gunicorn backend.wsgi` (deja dans le `Procfile`, Render le detecte seul).
+3. Onglet **Environment**, ajoutez ces variables (reprises de `.env.example`) :
 
-1. Créez un compte gratuit ("Beginner").
-2. Onglet **Consoles** → ouvrez une console Bash, puis :
-   ```bash
-   git clone https://github.com/votre-nom/prcs.git
-   cd prcs
-   mkvirtualenv --python=python3.10 prcs-env
-   pip install -r requirements.txt
    ```
-3. Onglet **Databases** : créez votre base MySQL gratuite, notez le nom
-   d'hôte, le nom de la base et votre mot de passe MySQL PythonAnywhere.
-4. Créez un fichier `.env` à la racine du projet cloné (via l'éditeur de
-   fichiers PythonAnywhere) en reprenant `.env.example`, avec vos vraies
-   valeurs (base MySQL de l'étape 3, `ALLOWED_HOSTS=votre-nom.pythonanywhere.com`,
-   `DEBUG=False`, `FRONTEND_URL=` l'URL Vercel de l'étape 3 ci-dessous).
-5. Onglet **Web** → **Add a new web app** → Manual configuration → Python
-   correspondant à votre virtualenv. Pointez le fichier WSGI vers
-   `backend/wsgi.py` et le virtualenv vers `prcs-env`.
-6. Toujours en console : `python manage.py migrate` puis
-   `python manage.py collectstatic --noinput` puis
-   `python manage.py createsuperuser` (pour votre compte administrateur).
-7. Rechargez l'application web ("Reload"). Votre API est en ligne sur
-   `https://votre-nom.pythonanywhere.com`.
+   DEBUG=False
+   SECRET_KEY=<generez une nouvelle valeur, jamais celle du repo>
+   ALLOWED_HOSTS=votre-backend.onrender.com
+   DB_NAME=... DB_USER=... DB_PASSWORD=... DB_HOST=... DB_PORT=...
+   DB_SSL_REQUIRED=True
+   DB_SSL_CA=            # laissez vide pour TiDB, chemin du certificat pour Aiven
+   CORS_ALLOWED_ORIGINS=https://votre-frontend.vercel.app
+   CSRF_TRUSTED_ORIGINS=https://votre-frontend.vercel.app
+   COOKIE_SAMESITE=None
+   FRONTEND_URL=https://votre-frontend.vercel.app
+   EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+   ```
 
-## 3. Héberger le frontend gratuitement (Vercel)
+   **`COOKIE_SAMESITE=None` est indispensable** : le frontend (Vercel) et le
+   backend (Render) sont sur des domaines differents. Sans ce reglage, le
+   navigateur refuse d'envoyer le cookie de session sur les appels API et la
+   connexion semble "ne pas fonctionner" alors que tout est bien configure.
 
-1. Créez un compte gratuit sur [vercel.com](https://vercel.com) (connexion
-   possible directement avec GitHub).
-2. **Add New → Project**, sélectionnez le dépôt `prcs`.
-3. **Root Directory** : `frontend`.
-4. **Build command** : `npm run build`, **Output directory** : `dist`
-   (Vercel les détecte automatiquement pour un projet Vite).
-5. Dans **Environment Variables**, ajoutez `VITE_API_URL` avec l'URL de votre
-   backend PythonAnywhere (ex: `https://votre-nom.pythonanywhere.com`).
-6. Cliquez **Deploy**. Vercel donne un lien public gratuit du type
-   `https://prcs-votre-nom.vercel.app` — c'est le lien à présenter en ligne.
-7. Retournez dans le `.env` du backend (étape 2.4) et mettez à jour
-   `CORS_ALLOWED_ORIGINS` et `CSRF_TRUSTED_ORIGINS` avec cette URL Vercel,
-   puis rechargez l'application web PythonAnywhere.
+4. Premier deploiement termine, ouvrez le **Shell** de Render (ou utilisez le
+   "Job" de build) et lancez :
+   ```
+   python manage.py migrate
+   python manage.py collectstatic --noinput
+   python manage.py createsuperuser
+   ```
+5. Votre API est disponible sur `https://votre-backend.onrender.com`.
 
-## Limites à connaître (compte gratuit)
+*(Koyeb suit les memes etapes : variables d'environnement identiques, commande
+de demarrage `gunicorn backend.wsgi`.)*
 
-- Les fichiers médias (CV, photos, logos) uploadés sont stockés sur le disque
-  du serveur gratuit — pas de garantie de conservation à très long terme, mais
-  suffisant pour une démonstration.
-- PythonAnywhere gratuit limite les requêtes sortantes à une liste de domaines
-  autorisés ; l'API elle-même reste pleinement accessible depuis l'extérieur.
-- Aucune carte bancaire n'est demandée pour ces deux services en formule
-  gratuite.
+## 3. Frontend React sur Vercel (ou Netlify)
+
+1. Sur [vercel.com](https://vercel.com), **Add New → Project**, connectez le
+   depot GitHub, **Root Directory** : `frontend`.
+2. Build Command `npm run build`, Output Directory `dist` (detecte automatiquement pour Vite).
+3. **Environment Variables** : `VITE_API_URL=https://votre-backend.onrender.com`
+4. **Deploy**. Lien obtenu : `https://votre-projet.vercel.app`.
+5. Retournez dans les variables d'environnement du backend (etape 2.3) et
+   mettez `CORS_ALLOWED_ORIGINS`, `CSRF_TRUSTED_ORIGINS` et `FRONTEND_URL` a
+   jour avec cette URL Vercel exacte, puis redeployez le backend.
+
+## Ce qui est deja configure dans le code
+
+- `backend/settings.py` : CORS, CSRF, `ALLOWED_HOSTS`, cookies, base de
+  donnees et email lisent tous des variables d'environnement — aucune
+  modification de code necessaire, seulement les variables ci-dessus.
+- `whitenoise` sert les fichiers statiques (CSS/JS admin, DRF) directement
+  depuis Django, sans configuration serveur supplementaire.
+- `requirements.txt` inclut `gunicorn` (serveur de production) et
+  `whitenoise`.
+- `Procfile` (`web: gunicorn backend.wsgi`) est detecte automatiquement par
+  Render/Koyeb/Heroku-like.
+- `DB_SSL_REQUIRED` + `DB_SSL_CA` : active une connexion MySQL chiffree (TLS),
+  necessaire pour TiDB Cloud et Aiven.
+- `COOKIE_SAMESITE` : passe les cookies de session en mode compatible
+  cross-domaine quand c'est necessaire (voir etape 2.3).
+
+## Limites du free tier a connaitre
+
+- Les fichiers uploades (CV, photos, logos) sont stockes sur le disque du
+  service Render gratuit, qui peut etre reinitialise en cas de redeploiement
+  — suffisant pour une demonstration, pas pour un usage long terme.
+- Un service Render gratuit se met en veille apres inactivite ; le premier
+  chargement apres une pause peut prendre 30-60 secondes.
