@@ -96,11 +96,13 @@ _db_options: dict = {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"}
 if _env_bool('DB_SSL_REQUIRED', False):
     # Aiven / TiDB Cloud (et la plupart des MySQL manages) exigent une connexion TLS.
     # DB_SSL_CA : chemin vers le certificat CA fourni par l'hebergeur (optionnel selon le fournisseur).
-    # mysqlclient (MySQLdb) attend un dict 'ssl' avec des cles comme 'ca',
-    # pas 'ssl_mode' (qui est ignore silencieusement). Un dict vide suffit a
-    # activer une connexion chiffree quand aucun certificat CA n'est fourni.
+    # mysqlclient (MySQLdb) active le SSL uniquement si "if ssl:" est vrai :
+    # un dict VIDE est falsy en Python et desactive silencieusement le SSL,
+    # ce qui redonnait la meme erreur "insecure transport". Il faut donc un
+    # dict non-vide ; {'ca': None} suffit a activer le chiffrement quand
+    # aucun certificat CA specifique n'est fourni (cas TiDB Cloud).
     _db_ssl_ca = os.getenv('DB_SSL_CA')
-    _db_options['ssl'] = {'ca': _db_ssl_ca} if _db_ssl_ca else {}
+    _db_options['ssl'] = {'ca': _db_ssl_ca if _db_ssl_ca else None}
 
 DATABASES = {
     'default': {
