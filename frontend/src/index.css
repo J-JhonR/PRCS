@@ -23,6 +23,21 @@
     --color-brand-950: #172554;
 }
 
+/* Tailwind v4 : la classe "border" seule n'a plus de couleur par defaut
+   (elle utilise currentColor), contrairement a v3 qui appliquait gray-200.
+   Beaucoup de composants du site utilisent juste "border" sans couleur
+   explicite (champs de formulaire, cartes...) et devenaient invisibles.
+   Ce bloc restaure le comportement v3 globalement. */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
 :root {
   color-scheme: light;
 }
