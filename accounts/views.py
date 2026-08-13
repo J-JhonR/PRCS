@@ -60,8 +60,13 @@ class CsrfCookieView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request):
-        get_token(request)
-        return Response({"detail": "CSRF cookie set"}, status=status.HTTP_200_OK)
+        # Le cookie csrftoken pose par Django appartient au domaine du backend
+        # (onrender.com) : en cross-domaine, le JS du frontend (vercel.app) ne
+        # peut pas le lire via document.cookie. On renvoie donc le jeton dans
+        # le corps JSON, que le frontend peut lire et renvoyer explicitement
+        # dans l'en-tete X-CSRFToken.
+        token = get_token(request)
+        return Response({"detail": "CSRF cookie set", "csrfToken": token}, status=status.HTTP_200_OK)
 
 
 class RegisterView(APIView):

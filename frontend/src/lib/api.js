@@ -7,9 +7,17 @@ function getCookie(name) {
   return match ? decodeURIComponent(match[1]) : null;
 }
 
+// En cross-domaine (frontend et backend sur des domaines differents), le JS
+// ne peut pas lire le cookie csrftoken pose par le backend via document.cookie
+// (il appartient au domaine du backend). Le backend renvoie donc le jeton
+// dans le corps JSON de /api/accounts/csrf/, qu'on garde en memoire ici.
+let csrfTokenCache = null;
+
 export async function ensureCsrfCookie() {
-  if (getCookie("csrftoken")) return;
-  await fetch(`${API_ORIGIN}/api/accounts/csrf/`, { credentials: "include" });
+  if (csrfTokenCache || getCookie("csrftoken")) return;
+  const response = await fetch(`${API_ORIGIN}/api/accounts/csrf/`, { credentials: "include" });
+  const data = await response.json().catch(() => ({}));
+  if (data.csrfToken) csrfTokenCache = data.csrfToken;
 }
 
 export async function apiFetch(path, options = {}) {
@@ -18,8 +26,12 @@ export async function apiFetch(path, options = {}) {
   const headers = new Headers(options.headers || {});
 
   if (MUTATING_METHODS.has(method)) {
+    // Le token peut avoir change (Django le fait tourner a la connexion) :
+    // on rafraichit systematiquement avant une mutation plutot que de se
+    // fier a un cache qui pourrait etre perime.
+    csrfTokenCache = null;
     await ensureCsrfCookie();
-    const csrfToken = getCookie("csrftoken");
+    const csrfToken = csrfTokenCache || getCookie("csrftoken");
     if (csrfToken) headers.set("X-CSRFToken", csrfToken);
   }
 
