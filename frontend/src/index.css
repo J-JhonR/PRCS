@@ -38,6 +38,34 @@
   }
 }
 
+/* Couleurs par defaut des champs de formulaire (inputs/textarea/select) :
+   sans ca, le texte tape et le placeholder heritent d'un gris quasi
+   invisible sur fond blanc. On aligne sur la palette bleu/gris du site
+   (brand-600). Les classes dark:* explicites dans le JSX restent
+   prioritaires (layer "utilities" > layer "base" dans Tailwind v4). */
+@layer base {
+  input,
+  textarea,
+  select {
+    background-color: #fff;
+    color: var(--color-gray-900, #111827);
+    border-color: var(--color-gray-300, #d1d5db);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-gray-400, #9ca3af);
+    opacity: 1;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--color-brand-600, #2563eb);
+  }
+}
+
 :root {
   color-scheme: light;
 }
