@@ -118,9 +118,6 @@ export default function Navbar() {
               alt="Logo"
               className="h-10 lg:h-11 w-auto object-contain"
             />
-            <span className="hidden sm:inline font-bold text-lg text-slate-900 dark:text-white tracking-tight">
-              PRCS
-            </span>
           </Link>
 
           {/* Navigation desktop */}
