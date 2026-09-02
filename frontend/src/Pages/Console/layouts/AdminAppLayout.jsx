@@ -3,7 +3,6 @@ import { NavLink, Outlet } from "react-router-dom";
 import { FaBriefcase, FaBuilding, FaChartPie, FaUsers } from "react-icons/fa";
 
 import { useAuth } from "../../../context/useAuth";
-import ThemeToggle from "../../../Components/UI/ThemeToggle";
 
 const navItems = [
   { to: "/console/app", label: "Vue d'ensemble", icon: FaChartPie, end: true },
@@ -43,7 +42,6 @@ export default function AdminAppLayout() {
               <p className="font-semibold text-slate-950 dark:text-white">Administration du site</p>
             </div>
             <div className="flex items-center gap-3">
-              <ThemeToggle />
               <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 dark:border-slate-800 dark:bg-slate-900">
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 font-semibold text-white dark:bg-blue-600">
                   {initial}

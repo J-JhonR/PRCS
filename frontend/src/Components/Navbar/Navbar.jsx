@@ -7,7 +7,6 @@ import { FaUserCircle } from "react-icons/fa";
 import { BsBriefcase } from "react-icons/bs";
 
 import { useAuth } from "../../context/useAuth";
-import ThemeToggle from "../UI/ThemeToggle";
 
 const HOME_BY_ROLE = { admin: "/console/app", recruteur: "/recruteur/app", candidat: "/dashboard" };
 
@@ -152,8 +151,6 @@ export default function Navbar() {
               <CiSearch size={22} />
             </button>
 
-            <ThemeToggle className="!p-2.5 !rounded-full" />
-
             {/* Lien Employeurs */}
             <Link
               to="/recruteur"
@@ -277,8 +274,6 @@ export default function Navbar() {
               <CiSearch size={22} />
             </button>
 
-            <ThemeToggle className="!p-2 !rounded-full !border-0 !bg-transparent" />
-
             <Link
               to={isLoggedIn ? spaceHref : "/auth"}
               className="p-2 text-gray-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20 rounded-full"
@@ -304,7 +299,7 @@ export default function Navbar() {
 
             <img src="/logo.png" alt="Logo" className="h-9" />
 
-            <ThemeToggle className="!p-2 !rounded-lg" />
+            <div className="w-8" />
           </div>
 
           <nav className="flex-1 overflow-y-auto py-8 px-6">

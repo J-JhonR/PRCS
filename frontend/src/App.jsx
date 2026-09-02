@@ -41,7 +41,6 @@ import AdminUsersPage from "./Pages/Console/app/AdminUsersPage"
 import AdminCompaniesPage from "./Pages/Console/app/AdminCompaniesPage"
 import AdminJobsPage from "./Pages/Console/app/AdminJobsPage"
 import { AuthProvider } from "./context/AuthProvider"
-import { ThemeProvider } from "./context/ThemeProvider"
 
 function AppContent() {
   const location = useLocation();
@@ -153,13 +152,11 @@ function AppContent() {
 
 function App() {
   return (
-    <ThemeProvider>
-      <BrowserRouter>
-        <AuthProvider>
-          <AppContent />
-        </AuthProvider>
-      </BrowserRouter>
-    </ThemeProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </BrowserRouter>
   )
 }
 

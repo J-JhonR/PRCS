@@ -14,7 +14,6 @@ import {
 } from "react-icons/fa";
 import { useAuth } from "../../../context/useAuth";
 import { apiFetch } from "../../../lib/api";
-import ThemeToggle from "../../../Components/UI/ThemeToggle";
 
 const navItems = [
   { to: "/recruteur/app", label: "Dashboard", icon: FaHome, end: true },
@@ -90,7 +89,6 @@ export default function RecruiterAppLayout() {
               <p className="font-bold text-slate-950 dark:text-white">Bonjour, équipe recrutement</p>
             </div>
             <div className="flex items-center gap-3">
-              <ThemeToggle />
               <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2 dark:border-slate-800 dark:bg-slate-900">
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 font-bold text-white">
                   {initial}
