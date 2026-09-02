@@ -3,6 +3,7 @@ import Navbar from "./Components/Navbar/Navbar"
 import Footer from "./Components/Footer/Footer"
 import Home from "./Pages/Home/Home"
 import AuthPage from "./Components/Auth/AuthPage"
+import GoogleAuthCompletePage from "./Components/Auth/GoogleAuthCompletePage"
 import ProtectedRoute from "./Components/Auth/ProtectedRoute"
 import Entreprises from "./Pages/Entreprises/Entreprises"
 import CompanyDetailsPage from "./Pages/Entreprises/CompanyDetailsPage"
@@ -54,6 +55,7 @@ function AppContent() {
     <Routes>
       <Route path ="/" element={<Home />}/>
       <Route path="/auth" element={<AuthPage />} />
+      <Route path="/auth/google/complete" element={<GoogleAuthCompletePage />} />
       <Route path="/jobs" element={<Jobs />} />
       <Route path="/jobs/:id" element={<JobDetails />} />
       <Route path="/entreprises" element={<Entreprises />} />

@@ -6,6 +6,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 import { useAuth } from "../../../context/useAuth";
 import { apiJSON } from "../../../lib/api";
+import GoogleLoginButton from "../../../Components/Auth/GoogleLoginButton";
 
 const HOME_BY_ROLE = { admin: "/console/app", recruteur: "/recruteur/app", candidat: "/dashboard" };
 
@@ -281,6 +282,13 @@ export default function RecruiterLoginPage() {
               {loading ? "Connexion..." : "Se connecter"}
             </button>
           </form>
+
+          <div className="flex items-center gap-3 my-5">
+            <div className="h-px flex-1 bg-gray-200 dark:bg-slate-700" />
+            <span className="text-xs text-gray-400">ou</span>
+            <div className="h-px flex-1 bg-gray-200 dark:bg-slate-700" />
+          </div>
+          <GoogleLoginButton role="recruteur" />
 
           <div className="mt-6 flex items-center gap-3 rounded-xl bg-blue-50 dark:bg-slate-800 p-4 text-sm text-gray-700 dark:text-slate-300">
             <FaBuilding className="shrink-0 text-blue-700 dark:text-blue-400" />

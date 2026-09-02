@@ -7,6 +7,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 import { useAuth } from "../../context/useAuth";
 import { apiFetch } from "../../lib/api";
+import GoogleLoginButton from "./GoogleLoginButton";
 
 const API = "/api/accounts";
 const REDIRECT_DELAY = 900;
@@ -539,6 +540,13 @@ export default function AuthPage() {
                   )}
                 </button>
               </form>
+
+              <div className="flex items-center gap-3 my-5">
+                <div className="h-px flex-1 bg-gray-200" />
+                <span className="text-xs text-gray-400">ou</span>
+                <div className="h-px flex-1 bg-gray-200" />
+              </div>
+              <GoogleLoginButton role="candidat" />
             </MotionDiv>
           ) : (
             <MotionDiv
@@ -694,6 +702,13 @@ export default function AuthPage() {
                   )}
                 </button>
               </form>
+
+              <div className="flex items-center gap-3 my-5">
+                <div className="h-px flex-1 bg-gray-200" />
+                <span className="text-xs text-gray-400">ou</span>
+                <div className="h-px flex-1 bg-gray-200" />
+              </div>
+              <GoogleLoginButton role="candidat" label="S'inscrire avec Google" />
 
               <p className="text-center mt-6 text-gray-600">
                 Déjà inscrit ?{" "}

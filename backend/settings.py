@@ -188,6 +188,15 @@ DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "no-reply@prcs.local")
 # URL du frontend, utilisee pour construire les liens envoyes par email
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
+# Connexion "Continuer avec Google" (OAuth 2.0, flux "authorization code").
+# GOOGLE_OAUTH_REDIRECT_URI doit correspondre EXACTEMENT a une des URI de
+# redirection autorisees configurees dans Google Cloud Console.
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "")
+GOOGLE_OAUTH_REDIRECT_URI = os.getenv(
+    "GOOGLE_OAUTH_REDIRECT_URI", "http://localhost:8000/api/accounts/google/callback/"
+)
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/

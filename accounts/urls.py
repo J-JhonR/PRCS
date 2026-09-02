@@ -4,6 +4,8 @@ from .views import (
     CsrfCookieView,
     EmailVerificationConfirmView,
     EmailVerificationRequestView,
+    GoogleCallbackView,
+    GoogleLoginRedirectView,
     LoginView,
     LogoutView,
     PasswordResetConfirmView,
@@ -24,4 +26,6 @@ urlpatterns = [
     path("password-reset-confirm/", PasswordResetConfirmView.as_view(), name="pwd_reset_confirm"),
     path("verify-email-request/", EmailVerificationRequestView.as_view(), name="verify_email_request"),
     path("verify-email-confirm/", EmailVerificationConfirmView.as_view(), name="verify_email_confirm"),
+    path("google/login/", GoogleLoginRedirectView.as_view(), name="google_login"),
+    path("google/callback/", GoogleCallbackView.as_view(), name="google_callback"),
 ]

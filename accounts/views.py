@@ -1,12 +1,18 @@
+import json
 import logging
 import secrets
+import urllib.error
+import urllib.parse
+import urllib.request
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.password_validation import validate_password
+from django.core import signing
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.mail import send_mail
 from django.conf import settings
 from django.middleware.csrf import get_token
+from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import permissions, status
@@ -16,6 +22,11 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 
 from .models import PasswordResetCode, User
+
+GOOGLE_OAUTH_SALT = "google-oauth-state"
+GOOGLE_AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/v2/auth"
+GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
+GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo"
 
 logger = logging.getLogger(__name__)
 
@@ -428,6 +439,126 @@ class EmailVerificationConfirmView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+
+
+class GoogleLoginRedirectView(APIView):
+    """Demarre le flux OAuth : redirige le navigateur vers l'ecran Google."""
+
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        role = request.GET.get("role", "candidat")
+        if role not in ALLOWED_SELF_SERVICE_ROLES:
+            role = "candidat"
+
+        if not settings.GOOGLE_CLIENT_ID:
+            logger.error("GOOGLE_CLIENT_ID absent : connexion Google non configuree")
+            return redirect(f"{settings.FRONTEND_URL}/auth/google/complete?error=non_configure")
+
+        # Le state signe protege contre le CSRF (un attaquant ne peut pas
+        # forger une requete de callback valide) et transporte le role choisi
+        # (candidat/recruteur) a travers l'aller-retour chez Google, sans
+        # avoir besoin de stocker quoi que ce soit cote serveur.
+        state = signing.dumps({"role": role, "n": secrets.token_urlsafe(16)}, salt=GOOGLE_OAUTH_SALT)
+
+        params = {
+            "client_id": settings.GOOGLE_CLIENT_ID,
+            "redirect_uri": settings.GOOGLE_OAUTH_REDIRECT_URI,
+            "response_type": "code",
+            "scope": "openid email profile",
+            "state": state,
+            "prompt": "select_account",
+        }
+        return redirect(f"{GOOGLE_AUTHORIZE_URL}?{urllib.parse.urlencode(params)}")
+
+
+class GoogleCallbackView(APIView):
+    """Point de retour de Google : echange le code, cree/connecte le compte."""
+
+    permission_classes = [permissions.AllowAny]
+
+    def _error_redirect(self, reason):
+        return redirect(f"{settings.FRONTEND_URL}/auth/google/complete?error={reason}")
+
+    def get(self, request):
+        if request.GET.get("error"):
+            # L'utilisateur a refuse l'acces sur l'ecran de consentement Google.
+            return self._error_redirect("access_denied")
+
+        code = request.GET.get("code")
+        state = request.GET.get("state")
+        if not code or not state:
+            return self._error_redirect("requete_invalide")
+
+        try:
+            payload = signing.loads(state, salt=GOOGLE_OAUTH_SALT, max_age=600)
+        except signing.BadSignature:
+            return self._error_redirect("state_invalide")
+
+        role = payload.get("role")
+        if role not in ALLOWED_SELF_SERVICE_ROLES:
+            role = "candidat"
+
+        try:
+            token_body = urllib.parse.urlencode(
+                {
+                    "code": code,
+                    "client_id": settings.GOOGLE_CLIENT_ID,
+                    "client_secret": settings.GOOGLE_CLIENT_SECRET,
+                    "redirect_uri": settings.GOOGLE_OAUTH_REDIRECT_URI,
+                    "grant_type": "authorization_code",
+                }
+            ).encode()
+            token_req = urllib.request.Request(GOOGLE_TOKEN_URL, data=token_body, method="POST")
+            with urllib.request.urlopen(token_req, timeout=10) as resp:
+                token_data = json.loads(resp.read().decode())
+
+            access_token = token_data.get("access_token")
+            if not access_token:
+                raise ValueError("Reponse Google sans access_token")
+
+            profile_req = urllib.request.Request(
+                GOOGLE_USERINFO_URL, headers={"Authorization": f"Bearer {access_token}"}
+            )
+            with urllib.request.urlopen(profile_req, timeout=10) as resp:
+                profile = json.loads(resp.read().decode())
+        except (urllib.error.URLError, ValueError, json.JSONDecodeError):
+            logger.exception("Echec de l'echange OAuth Google")
+            return self._error_redirect("echec_google")
+
+        email = (profile.get("email") or "").strip().lower()
+        if not email:
+            return self._error_redirect("email_manquant")
+
+        google_email_verified = bool(profile.get("email_verified"))
+
+        user = User.objects.filter(email=email).first()
+        if user is None:
+            first_name = profile.get("given_name") or ""
+            last_name = profile.get("family_name") or ""
+            full_name = profile.get("name") or f"{first_name} {last_name}".strip()
+            user = User(
+                username=email,
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+                full_name=full_name or None,
+                role=role,
+                email_verified=google_email_verified,
+            )
+            user.set_unusable_password()
+            user.save()
+        elif google_email_verified and not user.email_verified:
+            # Compte deja existant (inscrit par email/mdp) : Google vient de
+            # reconfirmer la propriete de cette adresse.
+            user.email_verified = True
+            user.save(update_fields=["email_verified"])
+
+        if not user.email_verified and not is_verification_exempt(user):
+            return self._error_redirect("email_non_verifie")
+
+        login(request, user)
+        return redirect(f"{settings.FRONTEND_URL}/auth/google/complete?role={user.role}")
 
 
 class UserProfileView(APIView):
