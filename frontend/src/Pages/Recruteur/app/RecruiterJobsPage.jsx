@@ -39,11 +39,11 @@ export default function RecruiterJobsPage() {
     <div className="space-y-8">
       <PageHeader
         eyebrow="Offres"
-        title="Gerer les offres d'emploi"
-        description="Creez, modifiez, publiez ou fermez les offres de votre organisation."
+        title="Gérer les offres d'emploi"
+        description="Créez, modifiez, publiez ou fermez les offres de votre organisation."
         action={
           <Link to="/recruteur/app/offres/new" className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700">
-            <FaPlus /> Creer une offre
+            <FaPlus /> Créer une offre
           </Link>
         }
       />
@@ -64,9 +64,9 @@ export default function RecruiterJobsPage() {
           className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 font-bold outline-none"
         >
           <option value="all">Tous les statuts</option>
-          <option value="published">Publiees</option>
+          <option value="published">Publiées</option>
           <option value="draft">Brouillons</option>
-          <option value="closed">Fermees</option>
+          <option value="closed">Fermées</option>
         </select>
       </div>
 

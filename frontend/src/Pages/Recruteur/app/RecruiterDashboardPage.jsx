@@ -46,10 +46,10 @@ export default function RecruiterDashboardPage() {
   }
 
   const metrics = [
-    { label: "Offres publiees", value: stats.published_jobs, trend: `${stats.draft_jobs} brouillon(s)`, icon: FaBriefcase },
-    { label: "Candidatures recues", value: stats.total_applications, trend: `+${stats.applications_today} aujourd'hui`, icon: FaUsers },
-    { label: "Entretiens a venir", value: stats.upcoming_interviews, trend: "Planifies", icon: FaCalendarCheck },
-    { label: "Messages non lus", value: stats.unread_messages, trend: "A traiter", icon: FaComments },
+    { label: "Offres publiées", value: stats.published_jobs, trend: `${stats.draft_jobs} brouillon(s)`, icon: FaBriefcase },
+    { label: "Candidatures reçues", value: stats.total_applications, trend: `+${stats.applications_today} aujourd'hui`, icon: FaUsers },
+    { label: "Entretiens à venir", value: stats.upcoming_interviews, trend: "Planifiés", icon: FaCalendarCheck },
+    { label: "Messages non lus", value: stats.unread_messages, trend: "À traiter", icon: FaComments },
   ];
 
   return (
@@ -57,7 +57,7 @@ export default function RecruiterDashboardPage() {
       <PageHeader
         eyebrow="Dashboard"
         title="Vue d'ensemble du recrutement"
-        description="Suivez les offres, candidatures, messages et taches prioritaires de votre equipe."
+        description="Suivez les offres, candidatures, messages et tâches prioritaires de votre équipe."
         action={
           <Link to="/recruteur/app/offres/new" className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700">
             <FaPlus /> Nouvelle offre
@@ -74,7 +74,7 @@ export default function RecruiterDashboardPage() {
       <section className="grid grid-cols-1 gap-6 xl:grid-cols-[1.15fr_0.85fr]">
         <div className="rounded-[2rem] bg-white dark:bg-slate-900 p-6 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold">Candidatures recentes</h2>
+            <h2 className="text-xl font-semibold">Candidatures récentes</h2>
             <Link to="/recruteur/app/candidatures" className="text-sm font-semibold text-blue-600">Tout voir</Link>
           </div>
           <div className="mt-5 space-y-3">
@@ -98,7 +98,7 @@ export default function RecruiterDashboardPage() {
         <div className="rounded-[2rem] bg-gradient-to-br from-blue-700 to-blue-950 p-6 text-white shadow-sm">
           <h2 className="text-xl font-semibold">Vos offres</h2>
           <div className="mt-5 space-y-3">
-            {jobs.length === 0 && <p className="text-blue-100">Aucune offre publiee.</p>}
+            {jobs.length === 0 && <p className="text-blue-100">Aucune offre publiée.</p>}
             {jobs.slice(0, 4).map((job) => (
               <Link key={job.id} to={`/recruteur/app/offres/${job.id}`} className="block rounded-2xl bg-white/10 p-4 hover:bg-white/20">
                 <p className="font-bold">{job.title}</p>
@@ -107,7 +107,7 @@ export default function RecruiterDashboardPage() {
             ))}
           </div>
           <Link to="/recruteur/app/offres" className="mt-5 inline-flex items-center gap-2 font-semibold text-blue-100">
-            Gerer les offres <FaArrowRight />
+            Gérer les offres <FaArrowRight />
           </Link>
         </div>
       </section>

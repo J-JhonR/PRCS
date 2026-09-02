@@ -173,14 +173,14 @@ export default function ProfilePage() {
   }, [profileData, profileIdentity, cvFile]);
 
   const completionSteps = [
-    { label: "Prenom", done: !!profileIdentity.firstName },
+    { label: "Prénom", done: !!profileIdentity.firstName },
     { label: "Nom", done: !!profileIdentity.lastName },
-    { label: "Telephone", done: !!profileData.phone },
+    { label: "Téléphone", done: !!profileData.phone },
     { label: "Localisation", done: !!profileData.location },
     { label: "Titre professionnel", done: !!profileData.headline },
-    { label: "Presentation", done: !!profileData.bio },
+    { label: "Présentation", done: !!profileData.bio },
     { label: "Competences", done: profileData.skills.length > 0 },
-    { label: "Experiences", done: profileData.experiences.length > 0 },
+    { label: "Expériences", done: profileData.experiences.length > 0 },
     { label: "Formations", done: profileData.education.length > 0 },
     { label: "Liens professionnels", done: !!profileData.linkedin_url || !!profileData.portfolio_url },
     { label: "CV", done: !!profileData.cv || !!cvFile },
@@ -283,7 +283,7 @@ export default function ProfilePage() {
         cv: normalized.cv,
         photo_profil: normalized.photo_profil,
       });
-      setToast({ type: "success", message: "Profil mis a jour avec succes." });
+      setToast({ type: "success", message: "Profil mis à jour avec succès." });
     } catch (error) {
       setToast({ type: "error", message: error.message });
     } finally {
@@ -378,7 +378,7 @@ export default function ProfilePage() {
 
               <div className="bg-slate-50 rounded-2xl px-5 py-4 border border-slate-200 min-w-[280px]">
                 <div className="flex items-center justify-between text-sm text-slate-600 mb-2">
-                  <span>Profil complete</span>
+                  <span>Profil complété</span>
                   <span className="font-semibold text-slate-900">{completionRate}%</span>
                 </div>
                 <div className="h-2.5 bg-slate-200 rounded-full overflow-hidden">
@@ -388,7 +388,7 @@ export default function ProfilePage() {
                   />
                 </div>
                 <p className="text-xs text-slate-500 mt-2">
-                  Completez votre profil pour etre plus visible aupres des recruteurs.
+                  Complétez votre profil pour être plus visible auprès des recruteurs.
                 </p>
               </div>
             </div>
@@ -400,7 +400,7 @@ export default function ProfilePage() {
             <div className="flex items-center justify-between gap-4 mb-6">
               <div>
                 <h2 className="text-2xl font-semibold text-slate-900">Informations du profil</h2>
-                <p className="text-slate-500 mt-1">Cette page utilise maintenant des donnees backend.</p>
+                <p className="text-slate-500 mt-1">Cette page utilise maintenant des données backend.</p>
               </div>
               <div className="flex gap-2">
                 {isEditing ? (
@@ -439,12 +439,12 @@ export default function ProfilePage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <InfoField icon={<FaUser />} label="Prenom" name="first_name" value={profileData.first_name || profileIdentity.firstName} isEditing={isEditing} onChange={handleFieldChange} placeholder="Votre prenom" />
+              <InfoField icon={<FaUser />} label="Prénom" name="first_name" value={profileData.first_name || profileIdentity.firstName} isEditing={isEditing} onChange={handleFieldChange} placeholder="Votre prénom" />
               <InfoField icon={<FaUser />} label="Nom" name="last_name" value={profileData.last_name || profileIdentity.lastName} isEditing={isEditing} onChange={handleFieldChange} placeholder="Votre nom" />
               <InfoField icon={<MdEmail />} label="Adresse email" value={profileEmail} placeholder="Votre email" />
-              <InfoField icon={<FaPhoneAlt />} label="Telephone" name="phone" value={profileData.phone} isEditing={isEditing} onChange={handleFieldChange} placeholder="Ajoutez votre numero" />
+              <InfoField icon={<FaPhoneAlt />} label="Téléphone" name="phone" value={profileData.phone} isEditing={isEditing} onChange={handleFieldChange} placeholder="Ajoutez votre numéro" />
               <InfoField icon={<FaMapMarkerAlt />} label="Localisation" name="location" value={profileData.location} isEditing={isEditing} onChange={handleFieldChange} placeholder="Ville, pays" />
-              <InfoField icon={<FaBriefcase />} label="Titre professionnel" name="headline" value={profileData.headline} isEditing={isEditing} onChange={handleFieldChange} placeholder="Ex: Developpeur Full Stack" />
+              <InfoField icon={<FaBriefcase />} label="Titre professionnel" name="headline" value={profileData.headline} isEditing={isEditing} onChange={handleFieldChange} placeholder="Ex: Développeur Full Stack" />
               <AvailabilityField value={profileData.availability_status} isEditing={isEditing} onChange={handleFieldChange} />
               <InfoField icon={<FaLinkedin />} label="LinkedIn" name="linkedin_url" value={profileData.linkedin_url} isEditing={isEditing} onChange={handleFieldChange} placeholder="https://linkedin.com/in/..." />
               <InfoField icon={<FaGlobe />} label="Portfolio" name="portfolio_url" value={profileData.portfolio_url} isEditing={isEditing} onChange={handleFieldChange} placeholder="https://monsite.com" />
@@ -463,7 +463,7 @@ export default function ProfilePage() {
                 />
               ) : (
                 <p className="text-slate-600 leading-7 mt-2 bg-slate-50 p-4 rounded-xl">
-                  {profileData.bio || "Aucune presentation pour le moment."}
+                  {profileData.bio || "Aucune présentation pour le moment."}
                 </p>
               )}
             </div>
@@ -476,7 +476,7 @@ export default function ProfilePage() {
             />
 
             <DynamicListSection
-              title="Experience professionnelle"
+              title="Expérience professionnelle"
               icon={<FaBriefcase />}
               items={profileData.experiences}
               isEditing={isEditing}
@@ -484,7 +484,7 @@ export default function ProfilePage() {
               fields={[
                 { key: "title", placeholder: "Titre du poste" },
                 { key: "company", placeholder: "Entreprise" },
-                { key: "period", placeholder: "Periode" },
+                { key: "period", placeholder: "Période" },
               ]}
               onAdd={(item) => addArrayItem("experiences", item)}
               onChange={(index, field, value) => handleArrayItemChange("experiences", index, field, value)}
@@ -498,9 +498,9 @@ export default function ProfilePage() {
               isEditing={isEditing}
               emptyItem={{ degree: "", school: "", year: "" }}
               fields={[
-                { key: "degree", placeholder: "Diplome ou formation" },
-                { key: "school", placeholder: "Ecole ou universite" },
-                { key: "year", placeholder: "Annee" },
+                { key: "degree", placeholder: "Diplôme ou formation" },
+                { key: "school", placeholder: "École ou université" },
+                { key: "year", placeholder: "Année" },
               ]}
               onAdd={(item) => addArrayItem("education", item)}
               onChange={(index, field, value) => handleArrayItemChange("education", index, field, value)}
@@ -517,7 +517,7 @@ export default function ProfilePage() {
                   <div className="flex-1">
                     <p className="font-medium text-slate-900">{cvFile?.name || getFilename(profileData.cv)}</p>
                     <p className="text-xs text-slate-500">
-                      {cvFile ? `${Math.round(cvFile.size / 1024)} KB` : "CV enregistre"}
+                      {cvFile ? `${Math.round(cvFile.size / 1024)} KB` : "CV enregistré"}
                     </p>
                   </div>
                   {isEditing && (
@@ -535,7 +535,7 @@ export default function ProfilePage() {
               ) : (
                 <div className="border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center">
                   <FaUpload className="mx-auto text-slate-400 mb-3" size={24} />
-                  <p className="text-slate-600 font-medium">Aucun CV telecharge</p>
+                  <p className="text-slate-600 font-medium">Aucun CV téléchargé</p>
                 </div>
               )}
 
@@ -576,7 +576,7 @@ export default function ProfilePage() {
                         item.done ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
                       }`}
                     >
-                      {item.done ? "Termine" : "En attente"}
+                      {item.done ? "Terminé" : "En attente"}
                     </span>
                   </div>
                 ))}
@@ -584,10 +584,10 @@ export default function ProfilePage() {
             </section>
 
             <section className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl shadow-sm p-6 text-white">
-              <h3 className="text-lg font-semibold">Etat actuel du profil</h3>
+              <h3 className="text-lg font-semibold">État actuel du profil</h3>
               <p className="text-slate-300 mt-3 leading-7">
-                Cette page n'utilise plus de donnees locales simulees. Les informations sont
-                chargees depuis Django et peuvent etre sauvegardees.
+                Cette page n'utilise plus de données locales simulées. Les informations sont
+                chargées depuis Django et peuvent être sauvegardées.
               </p>
             </section>
           </aside>
@@ -626,7 +626,7 @@ function AvailabilityField({ value, isEditing, onChange }) {
     <div className="rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-4">
       <div className="flex items-center gap-3 text-slate-500">
         <span className="text-blue-600 text-lg"><FaCheckCircle /></span>
-        <span className="text-sm font-medium">Disponibilite</span>
+        <span className="text-sm font-medium">Disponibilité</span>
       </div>
       {isEditing ? (
         <select
@@ -685,7 +685,7 @@ function SkillsEditor({ skills, isEditing, onAddSkill, onRemoveSkill }) {
           <input
             value={newSkill}
             onChange={(event) => setNewSkill(event.target.value)}
-            placeholder="Ajouter une competence"
+            placeholder="Ajouter une compétence"
             className="px-3 py-2 text-sm border border-slate-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500/20"
           />
           <button onClick={handleAdd} className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition">

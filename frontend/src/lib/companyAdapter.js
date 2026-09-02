@@ -1,12 +1,12 @@
 import { resolveMediaUrl } from "./jobAdapter";
 
 export const SIZE_LABELS = {
-  self: "Independant",
-  "1-10": "1-10 employes",
-  "11-50": "11-50 employes",
-  "51-200": "51-200 employes",
-  "201-500": "201-500 employes",
-  "500+": "500+ employes",
+  self: "Indépendant",
+  "1-10": "1-10 employés",
+  "11-50": "11-50 employés",
+  "51-200": "51-200 employés",
+  "201-500": "201-500 employés",
+  "500+": "500+ employés",
 };
 
 export function mapCompany(company, offersCount = 0) {

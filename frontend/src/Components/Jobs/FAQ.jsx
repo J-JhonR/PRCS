@@ -7,25 +7,25 @@ export default function FAQ() {
   const questions = [
     {
       q: "L'envoi d'un CV est-il obligatoire ?",
-      a: "Oui, un CV est obligatoire afin d'evaluer votre parcours et votre experience.",
+      a: "Oui, un CV est obligatoire afin d'évaluer votre parcours et votre expérience.",
     },
     {
-      q: "Le teletravail est-il possible pour ce poste ?",
-      a: "Cela depend du type du poste. Certaines positions permettent le teletravail complet ou partiel.",
+      q: "Le télétravail est-il possible pour ce poste ?",
+      a: "Cela dépend du type de poste. Certaines positions permettent le télétravail complet ou partiel.",
     },
     {
-      q: "Quelle est la duree du contrat ?",
-      a: "La duree du contrat est indiquee dans la fiche du poste.",
+      q: "Quelle est la durée du contrat ?",
+      a: "La durée du contrat est indiquée dans la fiche du poste.",
     },
     {
       q: "Ai-je besoin d'une lettre de motivation ?",
-      a: "Elle est fortement recommandee pour mettre en avant vos motivations.",
+      a: "Elle est fortement recommandée pour mettre en avant vos motivations.",
     },
   ];
 
   return (
     <section className="bg-white rounded-xl shadow p-6">
-      <h2 className="text-xl font-bold mb-4">Questions frequentes</h2>
+      <h2 className="text-xl font-bold mb-4">Questions fréquentes</h2>
 
       <div className="space-y-3">
         {questions.map((item, index) => (

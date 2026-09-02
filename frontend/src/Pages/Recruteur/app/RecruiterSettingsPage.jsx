@@ -6,18 +6,18 @@ export default function RecruiterSettingsPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="Parametres"
-        title="Compte entreprise et securite"
-        description="Gerez les utilisateurs, roles, permissions, notifications et options de securite."
+        eyebrow="Paramètres"
+        title="Compte entreprise et sécurité"
+        description="Gérez les utilisateurs, rôles, permissions, notifications et options de sécurité."
       />
       <section className="grid grid-cols-1 gap-5 lg:grid-cols-3">
         <SettingsCard icon={<FaUserPlus />} title="Utilisateurs" text="Inviter recruteurs, admins et responsables RH." />
-        <SettingsCard icon={<FaShieldAlt />} title="Roles et permissions" text="Limiter l'acces aux offres, messages et candidatures." />
-        <SettingsCard icon={<FaLock />} title="Securite" text="Sessions, mots de passe et verification du compte." />
+        <SettingsCard icon={<FaShieldAlt />} title="Rôles et permissions" text="Limiter l'accès aux offres, messages et candidatures." />
+        <SettingsCard icon={<FaLock />} title="Sécurité" text="Sessions, mots de passe et vérification du compte." />
       </section>
       <section className="rounded-[2rem] bg-white dark:bg-slate-900 p-6 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800">
         <h2 className="text-xl font-semibold">Notifications</h2>
-        {["Nouveau message candidat", "Nouvelle candidature", "Entretien confirme"].map((item) => (
+        {["Nouveau message candidat", "Nouvelle candidature", "Entretien confirmé"].map((item) => (
           <label key={item} className="mt-4 flex items-center justify-between rounded-2xl bg-slate-50 dark:bg-slate-800 p-4">
             <span className="font-bold">{item}</span>
             <input type="checkbox" defaultChecked className="h-5 w-5" />

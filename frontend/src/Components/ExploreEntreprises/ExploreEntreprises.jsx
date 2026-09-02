@@ -40,7 +40,7 @@ export default function ExploreEntreprise() {
     return unique.slice(0, 4);
   }, [companies]);
 
-  const filters = [{ key: "all", label: "A decouvrir" }, ...sectors.map((sector) => ({ key: sector, label: sector }))];
+  const filters = [{ key: "all", label: "À découvrir" }, ...sectors.map((sector) => ({ key: sector, label: sector }))];
 
   const filteredCompanies =
     activeFilter === "all" ? companies : companies.filter((company) => company.sector === activeFilter);
@@ -53,7 +53,7 @@ export default function ExploreEntreprise() {
         </h2>
 
         <p className="text-center text-gray-600 mt-3 mb-10 max-w-2xl mx-auto">
-          Decouvrez les employeurs qui faconnent l'avenir et trouvez ceux qui vous correspondent vraiment.
+          Découvrez les employeurs qui façonnent l'avenir et trouvez ceux qui vous correspondent vraiment.
         </p>
 
         {companies.length > 0 && (
@@ -79,7 +79,7 @@ export default function ExploreEntreprise() {
             <FaSpinner className="animate-spin" /> Chargement des entreprises...
           </div>
         ) : companies.length === 0 ? (
-          <p className="text-center text-gray-500 pb-16">Aucune entreprise a afficher pour le moment.</p>
+          <p className="text-center text-gray-500 pb-16">Aucune entreprise à afficher pour le moment.</p>
         ) : (
           <div className="relative">
             <button
@@ -111,7 +111,7 @@ export default function ExploreEntreprise() {
             to="/entreprises"
             className="inline-block px-8 py-3 rounded-xl bg-blue-700 text-white font-medium hover:bg-blue-800 transition"
           >
-            Acceder a toutes les entreprises {"->"}
+            Accéder à toutes les entreprises {"->"}
           </Link>
         </div>
       </div>

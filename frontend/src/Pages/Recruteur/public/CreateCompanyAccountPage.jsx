@@ -6,12 +6,12 @@ import { useAuth } from "../../../context/useAuth";
 import { apiFetch, apiJSON } from "../../../lib/api";
 
 const SIZE_OPTIONS = [
-  { value: "self", label: "Independant" },
-  { value: "1-10", label: "1-10 employes" },
-  { value: "11-50", label: "11-50 employes" },
-  { value: "51-200", label: "51-200 employes" },
-  { value: "201-500", label: "201-500 employes" },
-  { value: "500+", label: "500+ employes" },
+  { value: "self", label: "Indépendant" },
+  { value: "1-10", label: "1-10 employés" },
+  { value: "11-50", label: "11-50 employés" },
+  { value: "51-200", label: "51-200 employés" },
+  { value: "201-500", label: "201-500 employés" },
+  { value: "500+", label: "500+ employés" },
 ];
 
 const emptyAccount = { firstName: "", lastName: "", email: "", password: "", confirmPassword: "" };
@@ -62,7 +62,7 @@ export default function CreateCompanyAccountPage() {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error || data.detail || "Impossible de creer la fiche entreprise.");
+      throw new Error(data.error || data.detail || "Impossible de créer la fiche entreprise.");
     }
 
     login(user, "/recruteur/app");
@@ -122,7 +122,7 @@ export default function CreateCompanyAccountPage() {
     event.preventDefault();
     setError("");
     if (!verifyCode.trim()) {
-      setError("Entrez le code recu par email.");
+      setError("Entrez le code reçu par email.");
       return;
     }
 
@@ -136,7 +136,7 @@ export default function CreateCompanyAccountPage() {
       setNeedsVerification(false);
       await createCompany(data.user);
     } catch (err) {
-      setError(err.message || "Code invalide ou expire.");
+      setError(err.message || "Code invalide ou expiré.");
     } finally {
       setLoading(false);
     }
@@ -232,7 +232,7 @@ export default function CreateCompanyAccountPage() {
           {error && <p className="rounded-2xl bg-red-50 p-4 text-red-700">{error}</p>}
           {accountCreated && (
             <p className="rounded-2xl bg-emerald-50 p-4 text-emerald-700">
-              Compte cree. Finalisez la fiche entreprise pour acceder a votre espace.
+              Compte créé. Finalisez la fiche entreprise pour accéder à votre espace.
             </p>
           )}
 
@@ -242,7 +242,7 @@ export default function CreateCompanyAccountPage() {
               <h2 className="text-lg font-bold">Compte administrateur</h2>
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <Field label="Prenom" name="firstName" value={account.firstName} onChange={handleAccountChange} required />
+              <Field label="Prénom" name="firstName" value={account.firstName} onChange={handleAccountChange} required />
               <Field label="Nom" name="lastName" value={account.lastName} onChange={handleAccountChange} required />
               <Field label="Email professionnel" name="email" type="email" value={account.email} onChange={handleAccountChange} required />
               <div />
@@ -268,7 +268,7 @@ export default function CreateCompanyAccountPage() {
                   { value: "individual", label: "Personne physique" },
                 ]}
               />
-              <Field label="Secteur d'activite" name="sector" value={company.sector} onChange={handleCompanyChange} required />
+              <Field label="Secteur d'activité" name="sector" value={company.sector} onChange={handleCompanyChange} required />
               <Field label="Localisation" name="location" value={company.location} onChange={handleCompanyChange} required />
               <SelectField label="Taille" name="size" value={company.size} onChange={handleCompanyChange} options={SIZE_OPTIONS} />
               <Field label="Site web" name="website" value={company.website} onChange={handleCompanyChange} placeholder="https://..." />
@@ -290,11 +290,11 @@ export default function CreateCompanyAccountPage() {
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-700 px-6 py-3.5 font-semibold text-white hover:bg-blue-800 disabled:opacity-70"
           >
             {loading ? <FaSpinner className="animate-spin" /> : <FaRocket />}
-            {accountCreated ? "Finaliser la creation de l'entreprise" : "Creer mon compte entreprise"}
+            {accountCreated ? "Finaliser la création de l'entreprise" : "Créer mon compte entreprise"}
           </button>
 
           <p className="text-center text-sm text-slate-500 dark:text-slate-400">
-            Deja inscrit ?{" "}
+            Déjà inscrit ?{" "}
             <Link to="/recruteur/connexion" className="font-bold text-blue-700 dark:text-blue-400 hover:underline">
               Se connecter
             </Link>

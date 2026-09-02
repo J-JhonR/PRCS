@@ -160,7 +160,7 @@ class CandidateProfileSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("Format JSON invalide.") from exc
 
         if not isinstance(value, expected_type):
-            raise serializers.ValidationError("Format de donnees invalide.")
+            raise serializers.ValidationError("Format de données invalide.")
 
         return value
 

@@ -86,8 +86,8 @@ export default function RecruiterMessagesPage() {
     <div className="space-y-8">
       <PageHeader
         eyebrow="Messagerie"
-        title="Echanges entreprise-candidat"
-        description="Conversations liees aux candidatures recues."
+        title="Échanges entreprise-candidat"
+        description="Conversations liées aux candidatures reçues."
       />
 
       {error && <p className="rounded-2xl bg-red-50 p-4 text-red-700">{error}</p>}
@@ -99,7 +99,7 @@ export default function RecruiterMessagesPage() {
               <FaSpinner className="animate-spin" /> Chargement...
             </div>
           ) : applications.length === 0 ? (
-            <p className="p-6 text-slate-500 dark:text-slate-400">Aucune candidature a contacter.</p>
+            <p className="p-6 text-slate-500 dark:text-slate-400">Aucune candidature à contacter.</p>
           ) : (
             applications.map((application) => (
               <button
@@ -153,7 +153,7 @@ export default function RecruiterMessagesPage() {
                     value={draft}
                     onChange={(event) => setDraft(event.target.value)}
                     className="flex-1 bg-transparent outline-none"
-                    placeholder="Ecrire un message..."
+                    placeholder="Écrire un message..."
                   />
                   <button type="submit" disabled={sending} className="rounded-xl bg-blue-600 p-3 text-white hover:bg-blue-700 disabled:opacity-70">
                     {sending ? <FaSpinner className="animate-spin" /> : <FaPaperPlane />}
@@ -163,7 +163,7 @@ export default function RecruiterMessagesPage() {
             </>
           ) : (
             <div className="flex flex-1 items-center justify-center text-slate-500 dark:text-slate-400">
-              Selectionnez une conversation.
+              Sélectionnez une conversation.
             </div>
           )}
         </div>

@@ -14,12 +14,12 @@ export default function SettingsPage() {
       <div className="max-w-5xl mx-auto space-y-8">
         <section className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8">
           <p className="text-sm uppercase tracking-[0.2em] text-blue-700 font-semibold">
-            Parametres
+            Paramètres
           </p>
-          <h1 className="text-3xl font-bold text-slate-900 mt-2">Gerer mon compte</h1>
+          <h1 className="text-3xl font-bold text-slate-900 mt-2">Gérer mon compte</h1>
           <p className="text-slate-500 mt-3 max-w-3xl">
-            Personnalisez vos notifications, la visibilite de votre profil et les parametres
-            de securite de votre compte candidat.
+            Personnalisez vos notifications, la visibilité de votre profil et les paramètres
+            de sécurité de votre compte candidat.
           </p>
         </section>
 
@@ -28,11 +28,11 @@ export default function SettingsPage() {
             <SettingsBlock
               icon={<FaBell />}
               title="Notifications"
-              description="Choisissez comment vous souhaitez etre informe des nouvelles opportunites."
+              description="Choisissez comment vous souhaitez être informé des nouvelles opportunités."
             >
               <ToggleRow
                 label="Alertes email"
-                description="Recevoir un email lorsqu'une candidature evolue."
+                description="Recevoir un email lorsqu'une candidature évolue."
                 checked={emailAlerts}
                 onChange={() => setEmailAlerts((prev) => !prev)}
               />
@@ -46,12 +46,12 @@ export default function SettingsPage() {
 
             <SettingsBlock
               icon={<FaUserCog />}
-              title="Visibilite du profil"
-              description="Controlez la facon dont les recruteurs peuvent consulter votre profil."
+              title="Visibilité du profil"
+              description="Contrôlez la façon dont les recruteurs peuvent consulter votre profil."
             >
               <ToggleRow
                 label="Profil visible"
-                description="Autoriser les recruteurs a voir votre profil candidat."
+                description="Autoriser les recruteurs à voir votre profil candidat."
                 checked={profileVisibility}
                 onChange={() => setProfileVisibility((prev) => !prev)}
               />
@@ -59,18 +59,18 @@ export default function SettingsPage() {
 
             <SettingsBlock
               icon={<FaLock />}
-              title="Securite"
-              description="Mettez a jour vos informations sensibles et protegeez votre compte."
+              title="Sécurité"
+              description="Mettez à jour vos informations sensibles et protégez votre compte."
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <button className="rounded-2xl border border-slate-200 px-4 py-4 text-left hover:border-blue-300 hover:bg-blue-50 transition">
                   <p className="font-medium text-slate-900">Changer le mot de passe</p>
                   <p className="text-sm text-slate-500 mt-1">
-                    Mettez a jour votre mot de passe regulierement.
+                    Mettez à jour votre mot de passe régulièrement.
                   </p>
                 </button>
                 <button className="rounded-2xl border border-slate-200 px-4 py-4 text-left hover:border-blue-300 hover:bg-blue-50 transition">
-                  <p className="font-medium text-slate-900">Verifier mon email</p>
+                  <p className="font-medium text-slate-900">Vérifier mon email</p>
                   <p className="text-sm text-slate-500 mt-1">
                     Adresse actuelle : {user?.email || "Aucune adresse"}
                   </p>
@@ -86,22 +86,22 @@ export default function SettingsPage() {
                   <FaShieldAlt />
                 </span>
                 <div>
-                  <h3 className="font-semibold text-slate-900">Etat du compte</h3>
+                  <h3 className="font-semibold text-slate-900">État du compte</h3>
                   <p className="text-sm text-slate-500">Compte candidat actif</p>
                 </div>
               </div>
 
               <div className="space-y-3 mt-6">
-                <StatusPill label="Email principal enregistre" tone="success" />
+                <StatusPill label="Email principal enregistré" tone="success" />
                 <StatusPill label="Profil accessible" tone="info" />
-                <StatusPill label="Double verification a activer plus tard" tone="warning" />
+                <StatusPill label="Double vérification à activer plus tard" tone="warning" />
               </div>
             </section>
 
             <section className="bg-slate-900 rounded-3xl shadow-sm p-6 text-white">
-              <h3 className="text-lg font-semibold">Bon a savoir</h3>
+              <h3 className="text-lg font-semibold">Bon à savoir</h3>
               <p className="text-slate-300 leading-7 mt-3">
-                Ces parametres sont une bonne base pour votre espace candidat. Ensuite, on
+                Ces paramètres sont une bonne base pour votre espace candidat. Ensuite, on
                 pourra les connecter au backend pour les sauvegarder en base.
               </p>
             </section>

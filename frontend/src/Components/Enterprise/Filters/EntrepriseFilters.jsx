@@ -2,12 +2,12 @@ import React from "react";
 import { IoClose } from "react-icons/io5";
 
 const SIZE_OPTIONS = [
-  { value: "self", label: "Independant" },
-  { value: "1-10", label: "1-10 employes" },
-  { value: "11-50", label: "11-50 employes" },
-  { value: "51-200", label: "51-200 employes" },
-  { value: "201-500", label: "201-500 employes" },
-  { value: "500+", label: "500+ employes" },
+  { value: "self", label: "Indépendant" },
+  { value: "1-10", label: "1-10 employés" },
+  { value: "11-50", label: "11-50 employés" },
+  { value: "51-200", label: "51-200 employés" },
+  { value: "201-500", label: "201-500 employés" },
+  { value: "500+", label: "500+ employés" },
 ];
 
 export default function EntrepriseFilters({

@@ -57,7 +57,7 @@ export default function ApplyModal({ open, setOpen, job }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!isLoggedIn) {
-      setSubmitError("Connectez-vous pour postuler a cette offre.");
+      setSubmitError("Connectez-vous pour postuler à cette offre.");
       return;
     }
 
@@ -119,13 +119,13 @@ export default function ApplyModal({ open, setOpen, job }) {
 
           {!isLoggedIn ? (
             <p className="text-gray-700">
-              Vous devez etre connecte pour postuler. Fermez cette fenetre et connectez-vous a votre
+              Vous devez être connecté pour postuler. Fermez cette fenêtre et connectez-vous à votre
               compte candidat.
             </p>
           ) : success ? (
             <div className="flex flex-col items-center gap-3 py-10 text-center">
               <FaCheckCircle size={48} className="text-emerald-500" />
-              <p className="text-lg font-semibold text-gray-800">Candidature envoyee avec succes !</p>
+              <p className="text-lg font-semibold text-gray-800">Candidature envoyée avec succès !</p>
               <p className="text-gray-500">Vous pouvez suivre son statut depuis votre espace candidatures.</p>
               <button onClick={handleClose} className="mt-4 bg-blue-700 text-white px-6 py-2 rounded-lg hover:bg-blue-800">
                 Fermer
@@ -189,7 +189,7 @@ export default function ApplyModal({ open, setOpen, job }) {
                 )}
 
                 <p className="text-gray-500 text-xs mt-1">
-                  Max 5MB. Si aucun fichier n'est joint, le CV deja present sur votre profil sera utilise.
+                  Max 5MB. Si aucun fichier n'est joint, le CV déjà présent sur votre profil sera utilisé.
                 </p>
               </div>
 
@@ -203,7 +203,7 @@ export default function ApplyModal({ open, setOpen, job }) {
                   rows={5}
                   value={coverLetter}
                   onChange={(e) => setCoverLetter(e.target.value)}
-                  placeholder="Ecrivez votre message..."
+                  placeholder="Écrivez votre message..."
                   className="border border-gray-300 p-3 rounded-lg w-full focus:ring-2 focus:ring-blue-300"
                 />
               </div>

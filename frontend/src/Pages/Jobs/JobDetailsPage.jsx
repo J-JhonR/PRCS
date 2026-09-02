@@ -131,7 +131,7 @@ export default function JobDetailsPage() {
 
           {job.profile.length > 0 && (
             <section className="bg-white rounded-xl shadow p-6">
-              <h2 className="text-xl font-bold mb-4">Profil recherche</h2>
+              <h2 className="text-xl font-bold mb-4">Profil recherché</h2>
               <ul className="space-y-2 text-gray-700">
                 {job.profile.map((item, index) => (
                   <li key={index}>- {item}</li>

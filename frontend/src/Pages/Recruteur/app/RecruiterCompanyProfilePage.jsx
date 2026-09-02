@@ -6,12 +6,12 @@ import { apiFetch } from "../../../lib/api";
 import { resolveMediaUrl } from "../../../lib/jobAdapter";
 
 const SIZE_OPTIONS = [
-  { value: "self", label: "Independant" },
-  { value: "1-10", label: "1-10 employes" },
-  { value: "11-50", label: "11-50 employes" },
-  { value: "51-200", label: "51-200 employes" },
-  { value: "201-500", label: "201-500 employes" },
-  { value: "500+", label: "500+ employes" },
+  { value: "self", label: "Indépendant" },
+  { value: "1-10", label: "1-10 employés" },
+  { value: "11-50", label: "11-50 employés" },
+  { value: "51-200", label: "51-200 employés" },
+  { value: "201-500", label: "201-500 employés" },
+  { value: "500+", label: "500+ employés" },
 ];
 
 const emptyForm = {
@@ -73,7 +73,7 @@ export default function RecruiterCompanyProfilePage() {
       }
 
       await refreshCompany();
-      setMessage({ type: "success", text: "Profil entreprise sauvegarde avec succes." });
+      setMessage({ type: "success", text: "Profil entreprise sauvegardé avec succès." });
     } catch (error) {
       setMessage({ type: "error", text: error.message });
     } finally {
@@ -131,7 +131,7 @@ export default function RecruiterCompanyProfilePage() {
       <PageHeader
         eyebrow="Profil employeur"
         title={company ? "Page entreprise publique" : "Configurez votre entreprise"}
-        description="Presentez votre organisation, culture, avantages et localisation aux candidats."
+        description="Présentez votre organisation, culture, avantages et localisation aux candidats."
         action={
           company ? (
             <Link
@@ -140,7 +140,7 @@ export default function RecruiterCompanyProfilePage() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-2xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-5 py-3 font-semibold text-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
             >
-              <FaEye /> Apercu public
+              <FaEye /> Aperçu public
             </Link>
           ) : null
         }
@@ -181,21 +181,21 @@ export default function RecruiterCompanyProfilePage() {
           className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700 disabled:opacity-70"
         >
           {saving ? <FaSpinner className="animate-spin" /> : <FaSave />}
-          {company ? "Sauvegarder" : "Creer mon entreprise"}
+          {company ? "Sauvegarder" : "Créer mon entreprise"}
         </button>
       </form>
 
       {company && (
         <section className="rounded-[2rem] bg-white dark:bg-slate-900 p-6 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800">
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Medias</h2>
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Médias</h2>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Ajoutez des photos de votre equipe/locaux et un lien vers une video de presentation
+            Ajoutez des photos de votre équipe/locaux et un lien vers une vidéo de présentation
             (YouTube, Vimeo...).
           </p>
 
           <div className="mt-5 max-w-md">
             <Field
-              label="Lien video de presentation"
+              label="Lien vidéo de présentation"
               name="video_url"
               value={form.video_url}
               onChange={handleChange}
@@ -208,11 +208,11 @@ export default function RecruiterCompanyProfilePage() {
                 rel="noopener noreferrer"
                 className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-blue-700 dark:text-blue-400 hover:underline"
               >
-                <FaPlay size={12} /> Verifier le lien
+                <FaPlay size={12} /> Vérifier le lien
               </a>
             )}
             <p className="mt-1 text-xs text-slate-400">
-              Enregistre avec le formulaire ci-dessus (bouton "Sauvegarder").
+              Enregistré avec le formulaire ci-dessus (bouton "Sauvegarder").
             </p>
           </div>
 

@@ -5,10 +5,10 @@ import { PageHeader } from "../components/RecruiterCards";
 import { apiFetch, apiGetJSON } from "../../../lib/api";
 
 const STATUS_OPTIONS = [
-  { value: "received", label: "Recue" },
+  { value: "received", label: "Reçue" },
   { value: "in_process", label: "En cours" },
-  { value: "hired", label: "Acceptee" },
-  { value: "declined", label: "Declinee" },
+  { value: "hired", label: "Acceptée" },
+  { value: "declined", label: "Déclinée" },
 ];
 
 export default function RecruiterCandidateDetailsPage() {
@@ -44,7 +44,7 @@ export default function RecruiterCandidateDetailsPage() {
         body: JSON.stringify({ status }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || data.detail || "Mise a jour impossible.");
+      if (!response.ok) throw new Error(data.error || data.detail || "Mise à jour impossible.");
       setApplication(data);
     } catch (err) {
       setError(err.message);
@@ -92,7 +92,7 @@ export default function RecruiterCandidateDetailsPage() {
               <FaFilePdf className="text-2xl text-red-500" />
               <div>
                 <p className="font-semibold">CV candidat</p>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Ouvrir / telecharger</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Ouvrir / télécharger</p>
               </div>
             </a>
           ) : (

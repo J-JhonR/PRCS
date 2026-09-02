@@ -52,12 +52,12 @@ export default function RecruiterJobFormPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || data.detail || "Impossible de creer l'offre.");
+        throw new Error(data.error || data.detail || "Impossible de créer l'offre.");
       }
 
       navigate(`/recruteur/app/offres/${data.id}`);
     } catch (err) {
-      setError(err.message || "Impossible de creer l'offre.");
+      setError(err.message || "Impossible de créer l'offre.");
     } finally {
       setSubmitting(false);
     }
@@ -67,7 +67,7 @@ export default function RecruiterJobFormPage() {
     <div className="space-y-8">
       <PageHeader
         eyebrow="Nouvelle offre"
-        title="Creer une offre d'emploi"
+        title="Créer une offre d'emploi"
         description="Structurez clairement le poste pour attirer les bons candidats."
       />
 
@@ -80,7 +80,7 @@ export default function RecruiterJobFormPage() {
         }}
         className="grid grid-cols-1 gap-5 rounded-[2rem] bg-white dark:bg-slate-900 p-6 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800 lg:grid-cols-2"
       >
-        <Field label="Titre du poste" name="title" value={form.title} onChange={handleChange} placeholder="Ex: Developpeur Frontend React" required />
+        <Field label="Titre du poste" name="title" value={form.title} onChange={handleChange} placeholder="Ex: Développeur Frontend React" required />
         <Field label="Localisation" name="location" value={form.location} onChange={handleChange} placeholder="Port-au-Prince, Hybride..." required />
         <SelectField
           label="Type de contrat"
@@ -105,11 +105,11 @@ export default function RecruiterJobFormPage() {
             { value: "remote", label: "Remote" },
           ]}
         />
-        <Field label="Niveau d'experience" name="experience_level" value={form.experience_level} onChange={handleChange} placeholder="Junior, Senior..." />
+        <Field label="Niveau d'expérience" name="experience_level" value={form.experience_level} onChange={handleChange} placeholder="Junior, Senior..." />
         <Field label="Salaire minimum" name="salary_min" value={form.salary_min} onChange={handleChange} placeholder="Ex: 80000" type="number" />
         <Field label="Salaire maximum" name="salary_max" value={form.salary_max} onChange={handleChange} placeholder="Ex: 140000" type="number" />
         <Area label="Description du poste" name="description" value={form.description} onChange={handleChange} required />
-        <Area label="Competences requises" name="requirements" value={form.requirements} onChange={handleChange} />
+        <Area label="Compétences requises" name="requirements" value={form.requirements} onChange={handleChange} />
         <Area label="Avantages" name="benefits" value={form.benefits} onChange={handleChange} />
         <div className="flex flex-wrap gap-3 lg:col-span-2">
           <button

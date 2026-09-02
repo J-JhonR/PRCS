@@ -34,7 +34,7 @@ export default function AdminCompaniesPage() {
         body: JSON.stringify({ is_active: !company.is_active }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || data.detail || "Mise a jour impossible.");
+      if (!response.ok) throw new Error(data.error || data.detail || "Mise à jour impossible.");
       setCompanies((prev) => prev.map((c) => (c.id === company.id ? data : c)));
     } catch (err) {
       setError(err.message);
@@ -47,8 +47,8 @@ export default function AdminCompaniesPage() {
     <div className="space-y-8">
       <PageHeader
         eyebrow="Entreprises"
-        title="Moderation des entreprises"
-        description="Desactivez une fiche entreprise pour la retirer de la liste publique et de la recherche."
+        title="Modération des entreprises"
+        description="Désactivez une fiche entreprise pour la retirer de la liste publique et de la recherche."
       />
 
       {error && <p className="rounded-2xl bg-red-50 p-4 text-red-700">{error}</p>}
@@ -78,7 +78,7 @@ export default function AdminCompaniesPage() {
                     : "bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-300"
                 }`}
               >
-                {company.is_active ? "Active" : "Desactivee"}
+                {company.is_active ? "Active" : "Désactivée"}
               </span>
               <button
                 onClick={() => toggleActive(company)}
@@ -96,7 +96,7 @@ export default function AdminCompaniesPage() {
                 ) : (
                   <FaCheckCircle />
                 )}
-                {company.is_active ? "Desactiver" : "Activer"}
+                {company.is_active ? "Désactiver" : "Activer"}
               </button>
             </div>
           ))}

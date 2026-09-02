@@ -57,7 +57,7 @@ export default function Gallery({ job }) {
         <div className="mt-6">
           <iframe
             src={job.video}
-            title="Presentation video"
+            title="Présentation vidéo"
             className="w-full h-64 rounded-lg shadow"
             allowFullScreen
           ></iframe>

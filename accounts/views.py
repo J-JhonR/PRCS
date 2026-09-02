@@ -60,8 +60,8 @@ def send_verification_code(user):
     )
     try:
         send_mail(
-            subject="Verifiez votre adresse email - PRCS",
-            message=f"Votre code de verification est : {otp}\nIl expire dans 15 minutes.",
+            subject="Vérifiez votre adresse email - PRCS",
+            message=f"Votre code de vérification est : {otp}\nIl expire dans 15 minutes.",
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[user.email],
             fail_silently=False,
@@ -133,7 +133,7 @@ class RegisterView(APIView):
 
             if User.objects.filter(email=email).exists():
                 return Response(
-                    {"error": "Un compte existe deja avec cet email"},
+                    {"error": "Un compte existe déjà avec cet email"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
@@ -161,12 +161,12 @@ class RegisterView(APIView):
             if photo:
                 if not photo.content_type.startswith("image/"):
                     return Response(
-                        {"error": "La photo de profil doit etre une image"},
+                        {"error": "La photo de profil doit être une image"},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
                 if photo.size > 2 * 1024 * 1024:
                     return Response(
-                        {"error": "La photo de profil ne doit pas depasser 2 MB"},
+                        {"error": "La photo de profil ne doit pas dépasser 2 MB"},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
 
@@ -174,12 +174,12 @@ class RegisterView(APIView):
             if cv:
                 if cv.content_type not in ALLOWED_CV_CONTENT_TYPES:
                     return Response(
-                        {"error": "Le CV doit etre un PDF ou un document Word"},
+                        {"error": "Le CV doit être un PDF ou un document Word"},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
                 if cv.size > MAX_CV_SIZE:
                     return Response(
-                        {"error": "Le CV ne doit pas depasser 5 MB"},
+                        {"error": "Le CV ne doit pas dépasser 5 MB"},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
 
@@ -198,7 +198,7 @@ class RegisterView(APIView):
             send_verification_code(user)
             return Response(
                 {
-                    "message": "Compte cree. Verifiez votre email pour activer votre compte.",
+                    "message": "Compte créé. Vérifiez votre email pour activer votre compte.",
                     "email": user.email,
                     "requires_verification": True,
                 },
@@ -207,7 +207,7 @@ class RegisterView(APIView):
         except Exception:
             logger.exception("Echec de creation de compte")
             return Response(
-                {"error": "Impossible de creer le compte. Reessayez plus tard."},
+                {"error": "Impossible de créer le compte. Réessayez plus tard."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -236,7 +236,7 @@ class LoginView(APIView):
         if not user.email_verified and not is_verification_exempt(user):
             return Response(
                 {
-                    "error": "Verifiez votre email avant de vous connecter.",
+                    "error": "Vérifiez votre email avant de vous connecter.",
                     "requires_verification": True,
                     "email": user.email,
                 },
@@ -246,7 +246,7 @@ class LoginView(APIView):
         login(request, user)
         return Response(
             {
-                "message": "Connexion reussie",
+                "message": "Connexion réussie",
                 "user": build_user_payload(user, request),
             },
             status=status.HTTP_200_OK,
@@ -258,7 +258,7 @@ class LogoutView(APIView):
 
     def post(self, request):
         logout(request)
-        return Response({"message": "Deconnecte avec succes"}, status=status.HTTP_200_OK)
+        return Response({"message": "Déconnecté avec succès"}, status=status.HTTP_200_OK)
 
 
 class PasswordResetRequestView(APIView):
@@ -266,7 +266,7 @@ class PasswordResetRequestView(APIView):
     throttle_classes = [PasswordResetThrottle]
 
     GENERIC_RESPONSE = {
-        "message": "Si un compte existe avec cet email, un code de reinitialisation a ete envoye.",
+        "message": "Si un compte existe avec cet email, un code de réinitialisation a été envoyé.",
     }
 
     def post(self, request):
@@ -287,8 +287,8 @@ class PasswordResetRequestView(APIView):
 
             try:
                 send_mail(
-                    subject="Votre code de reinitialisation PRCS",
-                    message=f"Votre code de reinitialisation est : {otp}\nIl expire dans 15 minutes.",
+                    subject="Votre code de réinitialisation PRCS",
+                    message=f"Votre code de réinitialisation est : {otp}\nIl expire dans 15 minutes.",
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=[user.email],
                     fail_silently=False,
@@ -352,7 +352,7 @@ class PasswordResetConfirmView(APIView):
         )
         if not user or not reset_code or reset_code.is_expired() or reset_code.code != code:
             return Response(
-                {"error": "Code invalide ou expire"},
+                {"error": "Code invalide ou expiré"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -367,7 +367,7 @@ class PasswordResetConfirmView(APIView):
             user=user, purpose=PasswordResetCode.PURPOSE_PASSWORD_RESET
         ).delete()
 
-        return Response({"message": "Mot de passe reinitialise"}, status=status.HTTP_200_OK)
+        return Response({"message": "Mot de passe réinitialisé"}, status=status.HTTP_200_OK)
 
 
 class EmailVerificationRequestView(APIView):
@@ -377,7 +377,7 @@ class EmailVerificationRequestView(APIView):
     throttle_classes = [PasswordResetThrottle]
 
     GENERIC_RESPONSE = {
-        "message": "Si un compte existe et n'est pas encore verifie, un code a ete envoye.",
+        "message": "Si un compte existe et n'est pas encore vérifié, un code a été envoyé.",
     }
 
     def post(self, request):
@@ -421,7 +421,7 @@ class EmailVerificationConfirmView(APIView):
             or verification_code.code != code
         ):
             return Response(
-                {"error": "Code invalide ou expire"},
+                {"error": "Code invalide ou expiré"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -434,7 +434,7 @@ class EmailVerificationConfirmView(APIView):
         login(request, user)
         return Response(
             {
-                "message": "Email verifie",
+                "message": "Email vérifié",
                 "user": build_user_payload(user, request),
             },
             status=status.HTTP_200_OK,

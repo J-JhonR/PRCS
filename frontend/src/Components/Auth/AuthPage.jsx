@@ -91,7 +91,7 @@ export default function AuthPage() {
     const res = await apiFetch(`${API}/profile/`);
 
     if (!res.ok) {
-      throw new Error("La session backend n'a pas ete creee. Reessayez la connexion.");
+      throw new Error("La session backend n'a pas été créée. Réessayez la connexion.");
     }
   };
 
@@ -134,13 +134,13 @@ export default function AuthPage() {
     }
 
     if (!file.type.startsWith("image/")) {
-      showNotice("error", "La photo doit etre une image.");
+      showNotice("error", "La photo doit être une image.");
       event.target.value = "";
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      showNotice("error", "La photo ne doit pas depasser 2 MB.");
+      showNotice("error", "La photo ne doit pas dépasser 2 MB.");
       event.target.value = "";
       return;
     }

@@ -12,10 +12,10 @@ function generateVideoCallLink() {
 }
 
 const STATUS_LABELS = {
-  scheduled: "Planifie",
-  confirmed: "Confirme",
-  done: "Termine",
-  cancelled: "Annule",
+  scheduled: "Planifié",
+  confirmed: "Confirmé",
+  done: "Terminé",
+  cancelled: "Annulé",
 };
 
 export default function RecruiterInterviewsPage() {
@@ -91,13 +91,13 @@ export default function RecruiterInterviewsPage() {
       <PageHeader
         eyebrow="Entretiens"
         title="Planification des entretiens"
-        description="Suivez les entretiens, confirmations candidats et liens visioconference."
+        description="Suivez les entretiens, confirmations candidats et liens visioconférence."
         action={
           <button
             onClick={() => setShowForm((prev) => !prev)}
             className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700"
           >
-            <FaCalendarPlus /> Planifier
+            <FaCalendarPlus /> Planifiér
           </button>
         }
       />
@@ -115,7 +115,7 @@ export default function RecruiterInterviewsPage() {
               required
               className="mt-2 w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-4 py-3 outline-none focus:border-blue-600"
             >
-              <option value="">Selectionner une candidature</option>
+              <option value="">Sélectionner une candidature</option>
               {applications.map((application) => (
                 <option key={application.id} value={application.id}>
                   {application.candidate_name} - {application.job_offer_title}
@@ -143,7 +143,7 @@ export default function RecruiterInterviewsPage() {
               className="mt-2 w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-4 py-3 outline-none focus:border-blue-600"
             >
               <option value="remote">Visio</option>
-              <option value="onsite">Presentiel</option>
+              <option value="onsite">Présentiel</option>
             </select>
           </label>
           <label className="md:col-span-2">
@@ -162,12 +162,12 @@ export default function RecruiterInterviewsPage() {
                   onClick={() => setForm((prev) => ({ ...prev, location_or_link: generateVideoCallLink() }))}
                   className="flex shrink-0 items-center gap-2 whitespace-nowrap rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700 dark:bg-blue-600 dark:hover:bg-blue-500"
                 >
-                  <FaMagic /> Generer un lien
+                  <FaMagic /> Générer un lien
                 </button>
               )}
             </div>
             <p className="mt-1 text-xs text-slate-400">
-              Le lien genere ouvre une salle de visioconference gratuite (Jitsi Meet), sans compte requis.
+              Le lien généré ouvre une salle de visioconférence gratuite (Jitsi Meet), sans compte requis.
             </p>
           </label>
           <label className="md:col-span-2">
@@ -184,7 +184,7 @@ export default function RecruiterInterviewsPage() {
             disabled={submitting}
             className="md:col-span-2 inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700 disabled:opacity-70"
           >
-            {submitting ? <FaSpinner className="animate-spin" /> : <FaCalendarPlus />} Confirmer la planification
+            {submitting ? <FaSpinner className="animate-spin" /> : <FaCalendarPlus />} Confirmér la planification
           </button>
         </form>
       )}
@@ -195,7 +195,7 @@ export default function RecruiterInterviewsPage() {
         </div>
       ) : interviews.length === 0 ? (
         <p className="rounded-2xl bg-white dark:bg-slate-900 p-6 text-center text-slate-500 dark:text-slate-400 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800">
-          Aucun entretien planifie.
+          Aucun entretien planifié.
         </p>
       ) : (
         <section className="grid grid-cols-1 gap-5 lg:grid-cols-2">
@@ -215,7 +215,7 @@ export default function RecruiterInterviewsPage() {
                 <div className="mt-6 grid grid-cols-3 gap-3 text-sm">
                   <Info label="Date" value={date.toLocaleDateString("fr-FR")} />
                   <Info label="Heure" value={date.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })} />
-                  <Info label="Mode" value={interview.mode === "remote" ? "Visio" : "Presentiel"} />
+                  <Info label="Mode" value={interview.mode === "remote" ? "Visio" : "Présentiel"} />
                 </div>
                 {interview.location_or_link && (
                   <a

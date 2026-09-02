@@ -4,10 +4,10 @@ import { PageHeader } from "../components/RecruiterCards";
 import { apiGetJSON } from "../../../lib/api";
 
 const STAGES = [
-  { value: "received", label: "Recue" },
+  { value: "received", label: "Reçue" },
   { value: "in_process", label: "En cours" },
-  { value: "hired", label: "Acceptee" },
-  { value: "declined", label: "Declinee" },
+  { value: "hired", label: "Acceptée" },
+  { value: "declined", label: "Déclinée" },
 ];
 
 export default function RecruiterAnalyticsPage() {
@@ -55,10 +55,10 @@ export default function RecruiterAnalyticsPage() {
   const responseRate = total > 0 ? Math.round(((hired + declined) / total) * 100) : 0;
 
   const analyticsCards = [
-    { label: "Taux de conversion", value: `${conversionRate}%`, note: "Candidatures acceptees" },
+    { label: "Taux de conversion", value: `${conversionRate}%`, note: "Candidatures acceptées" },
     { label: "Candidatures totales", value: total, note: "Toutes offres confondues" },
-    { label: "Offres publiees", value: stats.published_jobs, note: `${stats.draft_jobs} brouillon(s)` },
-    { label: "Taux de reponse", value: `${responseRate}%`, note: "Candidatures traitees" },
+    { label: "Offres publiées", value: stats.published_jobs, note: `${stats.draft_jobs} brouillon(s)` },
+    { label: "Taux de réponse", value: `${responseRate}%`, note: "Candidatures traitées" },
   ];
 
   const maxCount = Math.max(1, ...STAGES.map((stage) => applications.filter((app) => app.status === stage.value).length));
@@ -68,7 +68,7 @@ export default function RecruiterAnalyticsPage() {
       <PageHeader
         eyebrow="Analytics"
         title="Performance recrutement"
-        description="Mesurez la conversion et la repartition des candidatures par statut."
+        description="Mesurez la conversion et la répartition des candidatures par statut."
       />
       <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
         {analyticsCards.map((card) => (
@@ -80,7 +80,7 @@ export default function RecruiterAnalyticsPage() {
         ))}
       </section>
       <section className="rounded-[2rem] bg-white dark:bg-slate-900 p-6 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800">
-        <h2 className="text-xl font-semibold">Repartition des candidatures par statut</h2>
+        <h2 className="text-xl font-semibold">Répartition des candidatures par statut</h2>
         <div className="mt-6 grid grid-cols-4 items-end gap-4">
           {STAGES.map((stage) => {
             const count = applications.filter((app) => app.status === stage.value).length;

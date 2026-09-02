@@ -47,7 +47,7 @@ export default function AdminUsersPage() {
         body: JSON.stringify({ is_active: !userItem.is_active }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || data.detail || "Mise a jour impossible.");
+      if (!response.ok) throw new Error(data.error || data.detail || "Mise à jour impossible.");
       setUsers((prev) => prev.map((u) => (u.id === userItem.id ? data : u)));
     } catch (err) {
       setError(err.message);
@@ -61,7 +61,7 @@ export default function AdminUsersPage() {
       <PageHeader
         eyebrow="Utilisateurs"
         title="Gestion des comptes"
-        description="Recherchez et suspendez un compte candidat, recruteur ou administrateur si necessaire."
+        description="Recherchez et suspendez un compte candidat, recruteur ou administrateur si nécessaire."
       />
 
       <form onSubmit={handleSearchSubmit} className="flex items-center gap-3 rounded-[2rem] bg-white px-5 py-4 shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
@@ -82,7 +82,7 @@ export default function AdminUsersPage() {
         </div>
       ) : users.length === 0 ? (
         <p className="rounded-2xl bg-white p-6 text-center text-slate-500 shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-800">
-          Aucun utilisateur trouve.
+          Aucun utilisateur trouvé.
         </p>
       ) : (
         <section className="overflow-hidden rounded-[2rem] bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
@@ -120,7 +120,7 @@ export default function AdminUsersPage() {
                 ) : (
                   <FaCheckCircle />
                 )}
-                {userItem.is_active ? "Suspendre" : "Reactiver"}
+                {userItem.is_active ? "Suspendre" : "Réactiver"}
               </button>
             </div>
           ))}

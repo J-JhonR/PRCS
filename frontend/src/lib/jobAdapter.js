@@ -37,7 +37,7 @@ export function mapJobOffer(offer) {
   const salary =
     offer.salary_min || offer.salary_max
       ? `${offer.salary_min || "?"} - ${offer.salary_max || "?"} ${offer.currency || ""}`.trim()
-      : "A definir";
+      : "À définir";
 
   return {
     id: offer.id,

@@ -37,8 +37,8 @@ class PasswordResetCode(models.Model):
     PURPOSE_PASSWORD_RESET = "password_reset"
     PURPOSE_EMAIL_VERIFICATION = "email_verification"
     PURPOSE_CHOICES = [
-        (PURPOSE_PASSWORD_RESET, "Reinitialisation mot de passe"),
-        (PURPOSE_EMAIL_VERIFICATION, "Verification email"),
+        (PURPOSE_PASSWORD_RESET, "Réinitialisation mot de passe"),
+        (PURPOSE_EMAIL_VERIFICATION, "Vérification email"),
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reset_codes")

@@ -34,7 +34,7 @@ export default function AdminJobsPage() {
         body: JSON.stringify({ status: "closed" }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || data.detail || "Mise a jour impossible.");
+      if (!response.ok) throw new Error(data.error || data.detail || "Mise à jour impossible.");
       setJobs((prev) => prev.map((j) => (j.id === job.id ? data : j)));
     } catch (err) {
       setError(err.message);
@@ -48,7 +48,7 @@ export default function AdminJobsPage() {
       <PageHeader
         eyebrow="Offres"
         title="Moderation des offres d'emploi"
-        description="Fermez une offre inappropriee, quelle que soit l'entreprise qui l'a publiee."
+        description="Fermez une offre inappropriée, quelle que soit l'entreprise qui l'a publiée."
       />
 
       {error && <p className="rounded-2xl bg-red-50 p-4 text-red-700">{error}</p>}

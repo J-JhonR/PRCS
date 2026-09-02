@@ -5,10 +5,10 @@ import { PageHeader } from "../components/RecruiterCards";
 import { apiGetJSON } from "../../../lib/api";
 
 const STAGES = [
-  { value: "received", label: "Recue" },
+  { value: "received", label: "Reçue" },
   { value: "in_process", label: "En cours" },
-  { value: "hired", label: "Acceptee" },
-  { value: "declined", label: "Declinee" },
+  { value: "hired", label: "Acceptée" },
+  { value: "declined", label: "Déclinée" },
 ];
 
 export default function RecruiterApplicationsPage() {

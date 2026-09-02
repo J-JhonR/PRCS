@@ -39,8 +39,8 @@ export default function AdminDashboardPage() {
   const metrics = [
     { label: "Utilisateurs", value: stats.total_users, trend: `${stats.candidates} candidats · ${stats.recruiters} recruteurs`, icon: FaUsers },
     { label: "Comptes suspendus", value: stats.suspended_users, trend: "is_active=False", icon: FaBan },
-    { label: "Entreprises", value: stats.companies_active, trend: `${stats.companies_inactive} desactivee(s)`, icon: FaBuilding },
-    { label: "Offres publiees", value: stats.jobs_published, trend: `${stats.jobs_draft} brouillon(s) · ${stats.jobs_closed} fermee(s)`, icon: FaBriefcase },
+    { label: "Entreprises", value: stats.companies_active, trend: `${stats.companies_inactive} désactivée(s)`, icon: FaBuilding },
+    { label: "Offres publiees", value: stats.jobs_published, trend: `${stats.jobs_draft} brouillon(s) · ${stats.jobs_closed} fermée(s)`, icon: FaBriefcase },
   ];
 
   return (
@@ -48,7 +48,7 @@ export default function AdminDashboardPage() {
       <PageHeader
         eyebrow="Console"
         title="Vue d'ensemble de la plateforme"
-        description="Suivez l'activite globale : utilisateurs, entreprises, offres et candidatures."
+        description="Suivez l'activité globale : utilisateurs, entreprises, offres et candidatures."
       />
 
       <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">

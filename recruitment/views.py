@@ -139,13 +139,13 @@ class RecruiterCompanyView(APIView):
     def get(self, request):
         company = get_recruiter_company(request.user)
         if not company:
-            return Response({"detail": "Aucune entreprise associee."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Aucune entreprise associée."}, status=status.HTTP_404_NOT_FOUND)
         return Response(CompanySerializer(company, context={"request": request}).data)
 
     def post(self, request):
         if get_recruiter_company(request.user):
             return Response(
-                {"error": "Une entreprise est deja associee a ce compte."},
+                {"error": "Une entreprise est déjà associée à ce compte."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -161,7 +161,7 @@ class RecruiterCompanyView(APIView):
     def put(self, request):
         company = get_recruiter_company(request.user)
         if not company:
-            return Response({"detail": "Aucune entreprise associee."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Aucune entreprise associée."}, status=status.HTTP_404_NOT_FOUND)
         serializer = CompanySerializer(company, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -248,12 +248,12 @@ def _send_decision_email(application):
 
     try:
         send_mail(
-            subject=f"Mise a jour de votre candidature - {application.job_offer.title}",
+            subject=f"Mise à jour de votre candidature - {application.job_offer.title}",
             message=(
                 f"Bonjour {application.candidate.first_name or application.candidate.username},\n\n"
                 f"Le statut de votre candidature pour le poste \"{application.job_offer.title}\" "
-                f"chez {application.job_offer.company.name} a ete mis a jour.\n\n"
-                f"Consultez la decision ici : {link}\n\n"
+                f"chez {application.job_offer.company.name} a été mis à jour.\n\n"
+                f"Consultez la décision ici : {link}\n\n"
                 "Ce lien reste valable 14 jours."
             ),
             from_email=settings.DEFAULT_FROM_EMAIL,
@@ -287,7 +287,7 @@ class ApplicationDecisionView(APIView):
                 token, salt=DECISION_TOKEN_SALT, max_age=DECISION_TOKEN_MAX_AGE
             )
         except signing.SignatureExpired:
-            return Response({"error": "Ce lien a expire."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Ce lien a expiré."}, status=status.HTTP_400_BAD_REQUEST)
         except signing.BadSignature:
             return Response({"error": "Lien invalide."}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -320,7 +320,7 @@ class MessageListCreateView(generics.ListCreateAPIView):
         is_recruiter_owner = company is not None and application.job_offer.company_id == company.id
         is_candidate_owner = application.candidate_id == user.id
         if not (is_recruiter_owner or is_candidate_owner):
-            raise PermissionDenied("Acces refuse a cette conversation.")
+            raise PermissionDenied("Accès refusé à cette conversation.")
         return application
 
     def get_queryset(self):
@@ -350,10 +350,10 @@ class InterviewListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         company = get_recruiter_company(self.request.user)
         if not company:
-            raise PermissionDenied("Reserve aux recruteurs.")
+            raise PermissionDenied("Réservé aux recruteurs.")
         job_application = serializer.validated_data.get("job_application")
         if job_application.job_offer.company_id != company.id:
-            raise PermissionDenied("Cette candidature n'appartient pas a votre entreprise.")
+            raise PermissionDenied("Cette candidature n'appartient pas à votre entreprise.")
         serializer.save()
 
 

@@ -24,7 +24,7 @@ const navItems = [
   { to: "/recruteur/app/entretiens", label: "Entretiens", icon: FaCalendarAlt },
   { to: "/recruteur/app/entreprise", label: "Entreprise", icon: FaBuilding },
   { to: "/recruteur/app/analytics", label: "Analytics", icon: FaChartPie },
-  { to: "/recruteur/app/parametres", label: "Parametres", icon: FaCog },
+  { to: "/recruteur/app/parametres", label: "Paramètres", icon: FaCog },
 ];
 
 export default function RecruiterAppLayout() {
@@ -87,7 +87,7 @@ export default function RecruiterAppLayout() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">{companyName}</p>
-              <p className="font-bold text-slate-950 dark:text-white">Bonjour, equipe recrutement</p>
+              <p className="font-bold text-slate-950 dark:text-white">Bonjour, équipe recrutement</p>
             </div>
             <div className="flex items-center gap-3">
               <ThemeToggle />
@@ -118,7 +118,7 @@ export default function RecruiterAppLayout() {
                 <div>
                   <p className="font-semibold text-amber-900 dark:text-amber-200">Configurez le profil de votre entreprise</p>
                   <p className="text-sm text-amber-800 dark:text-amber-300/80">
-                    Vous devez completer votre profil employeur avant de pouvoir publier des offres.
+                    Vous devez compléter votre profil employeur avant de pouvoir publier des offres.
                   </p>
                 </div>
               </div>
@@ -126,7 +126,7 @@ export default function RecruiterAppLayout() {
                 to="/recruteur/app/entreprise"
                 className="whitespace-nowrap rounded-2xl bg-amber-500 px-5 py-2.5 font-semibold text-white hover:bg-amber-600"
               >
-                Completer maintenant
+                Compléter maintenant
               </Link>
             </div>
           )}

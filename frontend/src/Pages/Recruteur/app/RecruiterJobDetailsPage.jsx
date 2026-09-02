@@ -48,7 +48,7 @@ export default function RecruiterJobDetailsPage() {
         body: JSON.stringify({ status }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || data.detail || "Mise a jour impossible.");
+      if (!response.ok) throw new Error(data.error || data.detail || "Mise à jour impossible.");
       setJob(data);
     } catch (err) {
       setError(err.message);
@@ -58,7 +58,7 @@ export default function RecruiterJobDetailsPage() {
   };
 
   const handleDelete = async () => {
-    if (!window.confirm("Supprimer definitivement cette offre ?")) return;
+    if (!window.confirm("Supprimer définitivement cette offre ?")) return;
     try {
       setUpdating(true);
       await apiFetch(`/api/recruitment/recruiter/jobs/${id}/`, { method: "DELETE" });
@@ -86,9 +86,9 @@ export default function RecruiterJobDetailsPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="Detail offre"
+        eyebrow="Détail offre"
         title={job.title}
-        description={`${job.location} · ${job.employment_type?.toUpperCase()} · cree le ${new Date(job.created_at).toLocaleDateString("fr-FR")}`}
+        description={`${job.location} · ${job.employment_type?.toUpperCase()} · créée le ${new Date(job.created_at).toLocaleDateString("fr-FR")}`}
         action={<JobStatusBadge status={job.status} />}
       />
 
@@ -100,7 +100,7 @@ export default function RecruiterJobDetailsPage() {
           <p className="mt-4 whitespace-pre-line leading-8 text-slate-600 dark:text-slate-400">{job.description}</p>
           {job.requirements && (
             <>
-              <h3 className="mt-8 font-semibold">Competences requises</h3>
+              <h3 className="mt-8 font-semibold">Compétences requises</h3>
               <p className="mt-3 whitespace-pre-line leading-7 text-slate-600 dark:text-slate-400">{job.requirements}</p>
             </>
           )}
@@ -115,7 +115,7 @@ export default function RecruiterJobDetailsPage() {
           <div className="rounded-[2rem] bg-gradient-to-br from-blue-700 to-blue-950 p-6 text-white shadow-sm">
             <FaUsers className="text-3xl text-blue-100" />
             <p className="mt-4 text-4xl font-semibold">{applicationsCount}</p>
-            <p className="text-slate-300">candidatures associees</p>
+            <p className="text-slate-300">candidatures associées</p>
             <Link to="/recruteur/app/candidatures" className="mt-6 inline-flex rounded-2xl bg-white px-5 py-3 font-semibold text-blue-800">
               Voir les candidats
             </Link>

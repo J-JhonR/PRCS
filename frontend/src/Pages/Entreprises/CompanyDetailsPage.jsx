@@ -70,7 +70,7 @@ export default function CompanyDetailsPage() {
         <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
             <section className="bg-white rounded-xl shadow p-6">
-              <h2 className="text-xl font-bold mb-4">A propos</h2>
+              <h2 className="text-xl font-bold mb-4">À propos</h2>
               <p className="text-gray-700 whitespace-pre-line">
                 {company.description || "Aucune description disponible pour le moment."}
               </p>
@@ -84,7 +84,7 @@ export default function CompanyDetailsPage() {
                   <div className="mb-6 aspect-video w-full overflow-hidden rounded-lg">
                     <iframe
                       src={getVideoEmbedUrl(company.videoUrl)}
-                      title={`Video de presentation - ${company.name}`}
+                      title={`Vidéo de présentation - ${company.name}`}
                       className="h-full w-full"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen

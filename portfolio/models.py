@@ -24,7 +24,7 @@ class Candidate(models.Model):
     ]
 
     name = models.CharField(max_length=150)
-    title = models.CharField(max_length=150, help_text="Role ou intitule de poste, ex: UI Designer")
+    title = models.CharField(max_length=150, help_text="Rôle ou intitulé de poste, ex: UI Designer")
     avatar = models.ImageField(upload_to="portfolio/avatars/", blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_AVAILABLE)
     linkedin_url = models.URLField(blank=True)

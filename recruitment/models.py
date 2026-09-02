@@ -17,7 +17,7 @@ class Company(TimeStampedModel):
         ("organization", "Institution"),
     ]
     SIZE_CHOICES = [
-        ("self", "Independant"),
+        ("self", "Indépendant"),
         ("1-10", "1-10"),
         ("11-50", "11-50"),
         ("51-200", "51-200"),
@@ -40,7 +40,7 @@ class Company(TimeStampedModel):
     logo = models.ImageField(upload_to="companies/logos/", blank=True, null=True)
     banner = models.ImageField(upload_to="companies/banners/", blank=True, null=True)
     video_url = models.URLField(
-        blank=True, help_text="Lien YouTube/Vimeo de presentation de l'entreprise"
+        blank=True, help_text="Lien YouTube/Vimeo de présentation de l'entreprise"
     )
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -144,8 +144,8 @@ class JobOffer(TimeStampedModel):
     ]
     STATUS_CHOICES = [
         ("draft", "Brouillon"),
-        ("published", "Publiee"),
-        ("closed", "Fermee"),
+        ("published", "Publiée"),
+        ("closed", "Fermée"),
     ]
 
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="job_offers")
@@ -191,10 +191,10 @@ class JobOffer(TimeStampedModel):
 
 class JobApplication(TimeStampedModel):
     STATUS_CHOICES = [
-        ("received", "Recue"),
+        ("received", "Reçue"),
         ("in_process", "En cours"),
-        ("hired", "Acceptee"),
-        ("declined", "Declinee"),
+        ("hired", "Acceptée"),
+        ("declined", "Déclinée"),
     ]
 
     job_offer = models.ForeignKey(JobOffer, on_delete=models.CASCADE, related_name="applications")
@@ -240,13 +240,13 @@ class Message(TimeStampedModel):
 class Interview(TimeStampedModel):
     MODE_CHOICES = [
         ("remote", "Visio"),
-        ("onsite", "Presentiel"),
+        ("onsite", "Présentiel"),
     ]
     STATUS_CHOICES = [
-        ("scheduled", "Planifie"),
-        ("confirmed", "Confirme"),
-        ("done", "Termine"),
-        ("cancelled", "Annule"),
+        ("scheduled", "Planifié"),
+        ("confirmed", "Confirmé"),
+        ("done", "Terminé"),
+        ("cancelled", "Annulé"),
     ]
 
     job_application = models.ForeignKey(

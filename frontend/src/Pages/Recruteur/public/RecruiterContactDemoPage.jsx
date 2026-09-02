@@ -47,7 +47,7 @@ export default function RecruiterContactDemoPage() {
               <Field icon={<FaUserTie />} name="name" label="Nom responsable" value={form.name} onChange={handleChange} required />
               <Field icon={<FaBuilding />} name="company" label="Entreprise / Institution" value={form.company} onChange={handleChange} required />
               <Field icon={<FaEnvelope />} name="email" label="Email professionnel" type="email" value={form.email} onChange={handleChange} required />
-              <Field icon={<FaPhone />} name="phone" label="Telephone" value={form.phone} onChange={handleChange} />
+              <Field icon={<FaPhone />} name="phone" label="Téléphone" value={form.phone} onChange={handleChange} />
             </div>
             <textarea
               name="message"

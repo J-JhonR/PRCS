@@ -15,17 +15,17 @@ import {
 export const recruiterModules = [
   {
     title: "Employer Branding",
-    description: "Presentez votre culture, vos avantages, vos valeurs et vos photos d'equipe.",
+    description: "Présentez votre culture, vos avantages, vos valeurs et vos photos d'équipe.",
     icon: FaHandshake,
   },
   {
     title: "Gestion des offres",
-    description: "Creez, publiez, suspendez et optimisez vos offres depuis un espace unique.",
+    description: "Créez, publiez, suspendez et optimisez vos offres depuis un espace unique.",
     icon: FaBriefcase,
   },
   {
     title: "ATS / Pipeline",
-    description: "Suivez chaque candidat par etape : nouveau, en revue, entretien, decision.",
+    description: "Suivez chaque candidat par étape : nouveau, en revue, entretien, décision.",
     icon: FaLayerGroup,
   },
   {
@@ -35,31 +35,31 @@ export const recruiterModules = [
   },
   {
     title: "Messagerie RH",
-    description: "Centralisez les echanges avec les candidats et gardez un historique complet.",
+    description: "Centralisez les échanges avec les candidats et gardez un historique complet.",
     icon: FaComments,
   },
   {
     title: "Entretiens",
-    description: "Planifiez les entretiens, confirmez les disponibilites et partagez un lien visio.",
+    description: "Planifiez les entretiens, confirmez les disponibilités et partagez un lien visio.",
     icon: FaCalendarCheck,
   },
   {
     title: "Tableau de bord",
-    description: "Pilotez vos offres, candidatures, messages et taches en un coup d'oeil.",
+    description: "Pilotez vos offres, candidatures, messages et tâches en un coup d'œil.",
     icon: FaBell,
   },
   {
     title: "Reporting RH",
-    description: "Mesurez la performance des offres, les sources et les delais de recrutement.",
+    description: "Mesurez la performance des offres, les sources et les délais de recrutement.",
     icon: FaChartLine,
   },
 ];
 
 export const recruiterStats = [
   { label: "Offres suivies", value: "120+" },
-  { label: "Candidatures traitees", value: "8k+" },
-  { label: "Delai moyen gagne", value: "35%" },
-  { label: "Messages centralises", value: "100%" },
+  { label: "Candidatures traitées", value: "8k+" },
+  { label: "Délai moyen gagné", value: "35%" },
+  { label: "Messages centralisés", value: "100%" },
 ];
 
 export const partnerLogos = ["PRCS", "Ayiti Bank", "Nova RH", "CaribTech", "Santé Plus"];
@@ -89,23 +89,23 @@ export const pricingPlans = [
   {
     name: "Starter",
     price: "0 HTG",
-    description: "Pour demarrer avec une presence employeur simple.",
-    features: ["1 profil employeur", "2 offres actives", "Candidatures centralisees", "Messagerie basique"],
-    cta: "Creer un compte",
+    description: "Pour démarrer avec une présence employeur simple.",
+    features: ["1 profil employeur", "2 offres actives", "Candidatures centralisées", "Messagerie basique"],
+    cta: "Créer un compte",
   },
   {
     name: "Growth",
     price: "Sur devis",
-    description: "Pour les entreprises qui recrutent regulierement.",
-    features: ["Offres illimitees", "Pipeline complet", "Modeles de messages", "Entretiens", "Analytics"],
-    cta: "Demander une demo",
+    description: "Pour les entreprises qui recrutent régulièrement.",
+    features: ["Offres illimitées", "Pipeline complet", "Modèles de messages", "Entretiens", "Analytics"],
+    cta: "Demander une démo",
     highlighted: true,
   },
   {
     name: "Enterprise",
-    price: "Personnalise",
-    description: "Pour institutions, groupes et equipes RH avancees.",
-    features: ["Multi-utilisateurs", "Roles et permissions", "Reporting avance", "Support prioritaire", "Integrations"],
+    price: "Personnalisé",
+    description: "Pour institutions, groupes et équipes RH avancées.",
+    features: ["Multi-utilisateurs", "Roles et permissions", "Reporting avancé", "Support prioritaire", "Intégrations"],
     cta: "Contacter PRCS",
   },
 ];
