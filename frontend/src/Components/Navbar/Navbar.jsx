@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { CiSearch } from "react-icons/ci";
 import { FaBars, FaRegLightbulb } from "react-icons/fa6";
 import { IoMdClose, IoMdLogOut, IoMdPerson, IoMdSettings } from "react-icons/io";
@@ -8,6 +8,8 @@ import { BsBriefcase } from "react-icons/bs";
 
 import { useAuth } from "../../context/useAuth";
 
+const HOME_BY_ROLE = { admin: "/console/app", recruteur: "/recruteur/app", candidat: "/dashboard" };
+
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -15,6 +17,25 @@ export default function Navbar() {
   const { isLoggedIn, logout, user } = useAuth();
   const searchInputRef = useRef(null);
   const profileDropdownRef = useRef(null);
+  const navigate = useNavigate();
+
+  // Un recruteur/admin connecte a son propre espace (/recruteur/app,
+  // /console/app) ; cette navbar est celle du site public cote candidat, les
+  // liens "Candidatures"/"Mon espace" n'ont donc de sens que pour un candidat.
+  const isCandidat = !user?.role || user.role === "candidat";
+  const spaceHref = HOME_BY_ROLE[user?.role] || "/dashboard";
+
+  const runSearch = (term) => {
+    const query = term.trim();
+    if (!query) return;
+    navigate(`/jobs?q=${encodeURIComponent(query)}`);
+    setSearchOpen(false);
+  };
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    runSearch(searchInputRef.current?.value || "");
+  };
 
   // Focus automatique sur l'input de recherche à l'ouverture
   useEffect(() => {
@@ -140,8 +161,8 @@ export default function Navbar() {
               Employeurs
             </Link>
 
-            {/* Lien Candidatures si connecté */}
-            {isLoggedIn && (
+            {/* Lien Candidatures si connecté en tant que candidat */}
+            {isLoggedIn && isCandidat && (
               <NavLink
                 to="/candidatures"
                 className={({ isActive }) =>
@@ -155,10 +176,10 @@ export default function Navbar() {
               </NavLink>
             )}
 
-            {/* Lien Mon espace si connecté */}
+            {/* Lien Mon espace si connecté (redirige vers l'espace du role) */}
             {isLoggedIn && (
               <NavLink
-                to="/dashboard"
+                to={spaceHref}
                 className={({ isActive }) =>
                   `${
                     isActive ? activeClassName : linkBase
@@ -197,13 +218,13 @@ export default function Navbar() {
 
                 {/* Dropdown menu */}
                 {profileDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 animate-in navbar-fade-in slide-in-from-top-2 duration-200 z-50">
                     <div className="px-4 py-2 border-b border-gray-100">
                       <p className="text-sm font-medium text-gray-800">{displayName}</p>
                       <p className="text-xs text-gray-500 truncate">{user?.email || "Compte candidat"}</p>
                     </div>
                     <Link
-                      to="/dashboard"
+                      to={spaceHref}
                       className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                       onClick={() => setProfileDropdownOpen(false)}
                     >
@@ -254,7 +275,7 @@ export default function Navbar() {
             </button>
 
             <Link
-              to={isLoggedIn ? "/dashboard" : "/auth"}
+              to={isLoggedIn ? spaceHref : "/auth"}
               className="p-2 text-gray-600 hover:text-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20 rounded-full"
               aria-label="Mon compte"
             >
@@ -321,23 +342,25 @@ export default function Navbar() {
 
               {isLoggedIn && (
                 <>
-                  <NavLink
-                    to="/candidatures"
-                    onClick={() => setMenuOpen(false)}
-                    className={({ isActive }) =>
-                      `${
-                        isActive
-                          ? "text-blue-600 border-l-4 border-blue-600 pl-4 -ml-4"
-                          : "hover:text-blue-600 transition-colors"
-                      } flex items-center gap-3`
-                    }
-                  >
-                    <BsBriefcase size={22} />
-                    Candidatures
-                  </NavLink>
+                  {isCandidat && (
+                    <NavLink
+                      to="/candidatures"
+                      onClick={() => setMenuOpen(false)}
+                      className={({ isActive }) =>
+                        `${
+                          isActive
+                            ? "text-blue-600 border-l-4 border-blue-600 pl-4 -ml-4"
+                            : "hover:text-blue-600 transition-colors"
+                        } flex items-center gap-3`
+                      }
+                    >
+                      <BsBriefcase size={22} />
+                      Candidatures
+                    </NavLink>
+                  )}
 
                   <NavLink
-                    to="/dashboard"
+                    to={spaceHref}
                     onClick={() => setMenuOpen(false)}
                     className={({ isActive }) =>
                       `${
@@ -405,7 +428,7 @@ export default function Navbar() {
       {/* Modale de recherche */}
       {searchOpen && (
         <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-start justify-center pt-24 px-4 animate-in fade-in duration-200"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-start justify-center pt-24 px-4 animate-in navbar-fade-in duration-200"
           onClick={() => setSearchOpen(false)}
         >
           <div
@@ -413,7 +436,7 @@ export default function Navbar() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-6">
-              <div className="flex items-center gap-3 pb-4 border-b border-gray-200">
+              <form className="flex items-center gap-3 pb-4 border-b border-gray-200" onSubmit={handleSearchSubmit}>
                 <CiSearch size={24} className="text-gray-400" />
                 <input
                   ref={searchInputRef}
@@ -423,13 +446,14 @@ export default function Navbar() {
                   aria-label="Recherche"
                 />
                 <button
+                  type="button"
                   onClick={() => setSearchOpen(false)}
                   className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   aria-label="Fermer la recherche"
                 >
                   <IoMdClose size={24} />
                 </button>
-              </div>
+              </form>
 
               <div className="pt-6">
                 <h2 className="text-center text-xl font-semibold text-gray-800">
@@ -440,12 +464,9 @@ export default function Navbar() {
                     (term) => (
                       <button
                         key={term}
+                        type="button"
                         className="px-4 py-1.5 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-blue-50 hover:text-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-                        onClick={() => {
-                          if (searchInputRef.current) {
-                            searchInputRef.current.value = term;
-                          }
-                        }}
+                        onClick={() => runSearch(term)}
                       >
                         {term}
                       </button>
@@ -461,49 +482,6 @@ export default function Navbar() {
           </div>
         </div>
       )}
-
-      {/* Styles d'animation */}
-      <style jsx>{`
-        @keyframes slide-in-from-left {
-          from {
-            transform: translateX(-100%);
-          }
-          to {
-            transform: translateX(0);
-          }
-        }
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        @keyframes slide-in-from-top-2 {
-          from {
-            opacity: 0;
-            transform: translateY(-8px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-in {
-          animation-duration: 0.3s;
-          animation-fill-mode: both;
-        }
-        .slide-in-from-left {
-          animation-name: slide-in-from-left;
-        }
-        .fade-in {
-          animation-name: fade-in;
-        }
-        .slide-in-from-top-2 {
-          animation-name: slide-in-from-top-2;
-        }
-      `}</style>
     </>
   );
 }

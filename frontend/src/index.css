@@ -85,6 +85,37 @@ body {
 .animate-fade-in {
   animation: fade-in 0.5s;
 }
+
+/* Animations d'ouverture (menu mobile, dropdown profil, modale de recherche)
+   utilisees par la Navbar. Anciennement inlinees via <style jsx> (syntaxe
+   Next.js non supportee par Vite) : son @keyframes fade-in du meme nom
+   ecrasait silencieusement celui ci-dessus (le dernier declare dans le DOM
+   gagne), ce qui cassait l'animation .animate-fade-in du Dashboard. */
+@keyframes slide-in-from-left {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+@keyframes navbar-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slide-in-from-top-2 {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-in {
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
+}
+.slide-in-from-left {
+  animation-name: slide-in-from-left;
+}
+.navbar-fade-in {
+  animation-name: navbar-fade-in;
+}
+.slide-in-from-top-2 {
+  animation-name: slide-in-from-top-2;
+}
 /* Hide scrollbar for Chrome, Safari and Edge */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
