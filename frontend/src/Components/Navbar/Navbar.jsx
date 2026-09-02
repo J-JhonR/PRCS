@@ -7,6 +7,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { BsBriefcase } from "react-icons/bs";
 
 import { useAuth } from "../../context/useAuth";
+import ThemeToggle from "../UI/ThemeToggle";
 
 const HOME_BY_ROLE = { admin: "/console/app", recruteur: "/recruteur/app", candidat: "/dashboard" };
 
@@ -86,9 +87,9 @@ export default function Navbar() {
   }, [profileDropdownOpen]);
 
   const activeClassName =
-    "text-blue-600 font-semibold relative after:absolute after:left-0 after:-bottom-1 after:w-full after:h-0.5 after:bg-gradient-to-r after:from-blue-600 after:to-indigo-600 after:rounded-full";
+    "text-blue-600 dark:text-blue-400 font-semibold relative after:absolute after:left-0 after:-bottom-1 after:w-full after:h-0.5 after:bg-gradient-to-r after:from-blue-600 after:to-indigo-600 after:rounded-full";
   const linkBase =
-    "text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium";
+    "text-gray-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 font-medium";
 
   const displayName = user?.full_name || user?.username || "Connecté";
   const userInitial = displayName.charAt(0).toUpperCase();
@@ -96,11 +97,11 @@ export default function Navbar() {
   return (
     <>
       {/* Header principal */}
-      <header className="w-full bg-white/95 backdrop-blur-sm shadow-sm sticky top-0 z-40 border-b border-gray-100">
+      <header className="w-full bg-white/95 dark:bg-slate-950/95 backdrop-blur-sm shadow-sm sticky top-0 z-40 border-b border-gray-100 dark:border-slate-800">
         <div className="container mx-auto flex items-center justify-between px-4 lg:px-6 py-3">
           {/* Bouton menu mobile */}
           <button
-            className="lg:hidden p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            className="lg:hidden p-2 text-gray-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
             onClick={() => setMenuOpen(true)}
             aria-label="Ouvrir le menu"
           >
@@ -117,6 +118,9 @@ export default function Navbar() {
               alt="Logo"
               className="h-10 lg:h-11 w-auto object-contain"
             />
+            <span className="hidden sm:inline font-bold text-lg text-slate-900 dark:text-white tracking-tight">
+              PRCS
+            </span>
           </Link>
 
           {/* Navigation desktop */}
@@ -145,18 +149,20 @@ export default function Navbar() {
             {/* Bouton recherche */}
             <button
               onClick={() => setSearchOpen(true)}
-              className="p-2.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              className="p-2.5 text-gray-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               aria-label="Rechercher"
             >
               <CiSearch size={22} />
             </button>
+
+            <ThemeToggle className="!p-2.5 !rounded-full" />
 
             {/* Lien Employeurs */}
             <Link
               to="/recruteur"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-200 border border-gray-300 dark:border-slate-700 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800 hover:border-gray-400 dark:hover:border-slate-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
             >
               Employeurs
             </Link>
@@ -204,56 +210,56 @@ export default function Navbar() {
               <div className="relative" ref={profileDropdownRef}>
                 <button
                   onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                  className="flex items-center gap-2 p-1.5 rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  className="flex items-center gap-2 p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   aria-label="Menu utilisateur"
                   aria-expanded={profileDropdownOpen}
                 >
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-medium shadow-sm">
                     {userInitial}
                   </div>
-                  <span className="text-sm text-gray-700 font-medium hidden xl:inline">
+                  <span className="text-sm text-gray-700 dark:text-slate-200 font-medium hidden xl:inline">
                     {displayName}
                   </span>
                 </button>
 
                 {/* Dropdown menu */}
                 {profileDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 animate-in navbar-fade-in slide-in-from-top-2 duration-200 z-50">
-                    <div className="px-4 py-2 border-b border-gray-100">
-                      <p className="text-sm font-medium text-gray-800">{displayName}</p>
-                      <p className="text-xs text-gray-500 truncate">{user?.email || "Compte candidat"}</p>
+                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-gray-100 dark:border-slate-800 py-2 animate-in navbar-fade-in slide-in-from-top-2 duration-200 z-50">
+                    <div className="px-4 py-2 border-b border-gray-100 dark:border-slate-800">
+                      <p className="text-sm font-medium text-gray-800 dark:text-white">{displayName}</p>
+                      <p className="text-xs text-gray-500 dark:text-slate-400 truncate">{user?.email || "Compte candidat"}</p>
                     </div>
                     <Link
                       to={spaceHref}
-                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
                       onClick={() => setProfileDropdownOpen(false)}
                     >
-                      <FaRegLightbulb size={16} className="text-gray-500" />
+                      <FaRegLightbulb size={16} className="text-gray-500 dark:text-slate-400" />
                       Mon espace
                     </Link>
                     <Link
                       to="/profil"
-                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
                       onClick={() => setProfileDropdownOpen(false)}
                     >
-                      <IoMdPerson size={16} className="text-gray-500" />
+                      <IoMdPerson size={16} className="text-gray-500 dark:text-slate-400" />
                       Mon profil
                     </Link>
                     <Link
                       to="/parametres"
-                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
                       onClick={() => setProfileDropdownOpen(false)}
                     >
-                      <IoMdSettings size={16} className="text-gray-500" />
+                      <IoMdSettings size={16} className="text-gray-500 dark:text-slate-400" />
                       Paramètres
                     </Link>
-                    <div className="border-t border-gray-100 my-1"></div>
+                    <div className="border-t border-gray-100 dark:border-slate-800 my-1"></div>
                     <button
                       onClick={() => {
                         setProfileDropdownOpen(false);
                         logout();
                       }}
-                      className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                      className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
                     >
                       <IoMdLogOut size={16} />
                       Déconnexion
@@ -265,18 +271,20 @@ export default function Navbar() {
           </div>
 
           {/* Actions mobile */}
-          <div className="lg:hidden flex items-center gap-3">
+          <div className="lg:hidden flex items-center gap-1">
             <button
               onClick={() => setSearchOpen(true)}
-              className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              className="p-2 text-gray-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               aria-label="Rechercher"
             >
               <CiSearch size={22} />
             </button>
 
+            <ThemeToggle className="!p-2 !rounded-full !border-0 !bg-transparent" />
+
             <Link
               to={isLoggedIn ? spaceHref : "/auth"}
-              className="p-2 text-gray-600 hover:text-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20 rounded-full"
+              className="p-2 text-gray-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20 rounded-full"
               aria-label="Mon compte"
             >
               <FaUserCircle size={26} />
@@ -287,11 +295,11 @@ export default function Navbar() {
 
       {/* Menu mobile (plein écran) */}
       {menuOpen && (
-        <div className="fixed inset-0 bg-white z-50 flex flex-col animate-in slide-in-from-left duration-300">
-          <div className="flex items-center justify-between p-6 border-b border-gray-100">
+        <div className="fixed inset-0 bg-white dark:bg-slate-950 z-50 flex flex-col animate-in slide-in-from-left duration-300">
+          <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-slate-800">
             <button
               onClick={() => setMenuOpen(false)}
-              className="p-2 text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              className="p-2 text-gray-500 dark:text-slate-400 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               aria-label="Fermer le menu"
             >
               <IoMdClose size={26} />
@@ -299,18 +307,18 @@ export default function Navbar() {
 
             <img src="/logo.png" alt="Logo" className="h-9" />
 
-            <div className="w-8" />
+            <ThemeToggle className="!p-2 !rounded-lg" />
           </div>
 
           <nav className="flex-1 overflow-y-auto py-8 px-6">
-            <div className="flex flex-col gap-6 text-xl font-semibold text-gray-800">
+            <div className="flex flex-col gap-6 text-xl font-semibold text-gray-800 dark:text-white">
               <NavLink
                 to="/"
                 onClick={() => setMenuOpen(false)}
                 className={({ isActive }) =>
                   isActive
-                    ? "text-blue-600 border-l-4 border-blue-600 pl-4 -ml-4"
-                    : "hover:text-blue-600 transition-colors"
+                    ? "text-blue-600 dark:text-blue-400 border-l-4 border-blue-600 dark:border-blue-400 pl-4 -ml-4"
+                    : "hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 }
               >
                 Accueil
@@ -321,8 +329,8 @@ export default function Navbar() {
                 onClick={() => setMenuOpen(false)}
                 className={({ isActive }) =>
                   isActive
-                    ? "text-blue-600 border-l-4 border-blue-600 pl-4 -ml-4"
-                    : "hover:text-blue-600 transition-colors"
+                    ? "text-blue-600 dark:text-blue-400 border-l-4 border-blue-600 dark:border-blue-400 pl-4 -ml-4"
+                    : "hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 }
               >
                 Trouver un job
@@ -333,8 +341,8 @@ export default function Navbar() {
                 onClick={() => setMenuOpen(false)}
                 className={({ isActive }) =>
                   isActive
-                    ? "text-blue-600 border-l-4 border-blue-600 pl-4 -ml-4"
-                    : "hover:text-blue-600 transition-colors"
+                    ? "text-blue-600 dark:text-blue-400 border-l-4 border-blue-600 dark:border-blue-400 pl-4 -ml-4"
+                    : "hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 }
               >
                 Trouver une entreprise
@@ -349,8 +357,8 @@ export default function Navbar() {
                       className={({ isActive }) =>
                         `${
                           isActive
-                            ? "text-blue-600 border-l-4 border-blue-600 pl-4 -ml-4"
-                            : "hover:text-blue-600 transition-colors"
+                            ? "text-blue-600 dark:text-blue-400 border-l-4 border-blue-600 dark:border-blue-400 pl-4 -ml-4"
+                            : "hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                         } flex items-center gap-3`
                       }
                     >
@@ -365,8 +373,8 @@ export default function Navbar() {
                     className={({ isActive }) =>
                       `${
                         isActive
-                          ? "text-blue-600 border-l-4 border-blue-600 pl-4 -ml-4"
-                          : "hover:text-blue-600 transition-colors"
+                          ? "text-blue-600 dark:text-blue-400 border-l-4 border-blue-600 dark:border-blue-400 pl-4 -ml-4"
+                          : "hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                       } flex items-center gap-3`
                     }
                   >
@@ -377,20 +385,20 @@ export default function Navbar() {
               )}
             </div>
 
-            <div className="my-8 border-t border-gray-200" />
+            <div className="my-8 border-t border-gray-200 dark:border-slate-800" />
 
             <Link
               to="/recruteur"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setMenuOpen(false)}
-              className="block w-full py-4 text-center text-gray-700 border border-gray-300 rounded-xl font-medium hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              className="block w-full py-4 text-center text-gray-700 dark:text-slate-200 border border-gray-300 dark:border-slate-700 rounded-xl font-medium hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20"
             >
               Employeurs / Recruteurs
             </Link>
           </nav>
 
-          <div className="p-6 border-t border-gray-100 bg-gray-50/50">
+          <div className="p-6 border-t border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-900/50">
             {!isLoggedIn ? (
               <Link
                 to="/auth"
@@ -406,8 +414,8 @@ export default function Navbar() {
                     {userInitial}
                   </div>
                   <div>
-                    <p className="font-medium text-gray-800">{displayName}</p>
-                    <p className="text-sm text-gray-500">Connecté</p>
+                    <p className="font-medium text-gray-800 dark:text-white">{displayName}</p>
+                    <p className="text-sm text-gray-500 dark:text-slate-400">Connecté</p>
                   </div>
                 </div>
                 <button
@@ -415,7 +423,7 @@ export default function Navbar() {
                     setMenuOpen(false);
                     logout();
                   }}
-                  className="block w-full py-3 text-center text-white bg-gray-800 rounded-xl font-medium hover:bg-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800/50 focus:ring-offset-2"
+                  className="block w-full py-3 text-center text-white bg-gray-800 dark:bg-slate-700 rounded-xl font-medium hover:bg-gray-900 dark:hover:bg-slate-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800/50 focus:ring-offset-2"
                 >
                   Déconnexion
                 </button>
@@ -432,23 +440,23 @@ export default function Navbar() {
           onClick={() => setSearchOpen(false)}
         >
           <div
-            className="bg-white w-full max-w-3xl shadow-2xl rounded-2xl overflow-hidden"
+            className="bg-white dark:bg-slate-900 w-full max-w-3xl shadow-2xl rounded-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-6">
-              <form className="flex items-center gap-3 pb-4 border-b border-gray-200" onSubmit={handleSearchSubmit}>
-                <CiSearch size={24} className="text-gray-400" />
+              <form className="flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-slate-800" onSubmit={handleSearchSubmit}>
+                <CiSearch size={24} className="text-gray-400 dark:text-slate-500" />
                 <input
                   ref={searchInputRef}
                   type="text"
                   placeholder="Recherchez un job, une entreprise..."
-                  className="flex-1 outline-none text-lg text-gray-800 placeholder:text-gray-400 bg-transparent"
+                  className="flex-1 outline-none text-lg text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-500 bg-transparent"
                   aria-label="Recherche"
                 />
                 <button
                   type="button"
                   onClick={() => setSearchOpen(false)}
-                  className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  className="p-1.5 text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   aria-label="Fermer la recherche"
                 >
                   <IoMdClose size={24} />
@@ -456,7 +464,7 @@ export default function Navbar() {
               </form>
 
               <div className="pt-6">
-                <h2 className="text-center text-xl font-semibold text-gray-800">
+                <h2 className="text-center text-xl font-semibold text-gray-800 dark:text-white">
                   Comment pouvons-nous vous aider aujourd'hui ?
                 </h2>
                 <div className="flex flex-wrap justify-center gap-3 mt-6">
@@ -465,7 +473,7 @@ export default function Navbar() {
                       <button
                         key={term}
                         type="button"
-                        className="px-4 py-1.5 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-blue-50 hover:text-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                        className="px-4 py-1.5 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-200 rounded-full text-sm hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                         onClick={() => runSearch(term)}
                       >
                         {term}
@@ -475,7 +483,7 @@ export default function Navbar() {
                 </div>
               </div>
             </div>
-            <div className="bg-gray-50 px-6 py-3 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500">
+            <div className="bg-gray-50 dark:bg-slate-950 px-6 py-3 border-t border-gray-100 dark:border-slate-800 flex justify-between items-center text-xs text-gray-500 dark:text-slate-400">
               <span>Appuyez sur Échap pour fermer</span>
               <span>↵ pour rechercher</span>
             </div>
