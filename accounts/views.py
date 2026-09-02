@@ -548,11 +548,23 @@ class GoogleCallbackView(APIView):
             )
             user.set_unusable_password()
             user.save()
-        elif google_email_verified and not user.email_verified:
-            # Compte deja existant (inscrit par email/mdp) : Google vient de
-            # reconfirmer la propriete de cette adresse.
-            user.email_verified = True
-            user.save(update_fields=["email_verified"])
+        else:
+            if google_email_verified and not user.email_verified:
+                # Compte deja existant (inscrit par email/mdp) : Google vient
+                # de reconfirmer la propriete de cette adresse.
+                user.email_verified = True
+                user.save(update_fields=["email_verified"])
+
+            if user.role != role and not is_verification_exempt(user):
+                # Ce compte Google existe deja avec un autre role (ex: cree
+                # via l'espace recruteur, mais tente ici depuis l'espace
+                # candidat). Les comptes candidat/recruteur sont volontairement
+                # separes : on refuse plutot que de connecter silencieusement
+                # la personne au mauvais espace.
+                return redirect(
+                    f"{settings.FRONTEND_URL}/auth/google/complete"
+                    f"?error=role_mismatch&actual_role={user.role}"
+                )
 
         if not user.email_verified and not is_verification_exempt(user):
             return self._error_redirect("email_non_verifie")

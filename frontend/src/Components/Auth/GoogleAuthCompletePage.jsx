@@ -17,6 +17,9 @@ const ERROR_MESSAGES = {
   non_configure: "La connexion Google n'est pas encore configurée sur ce site.",
 };
 
+const ROLE_LABEL = { candidat: "candidat", recruteur: "recruteur/employeur" };
+const ROLE_LOGIN_PATH = { candidat: "/auth", recruteur: "/recruteur/connexion" };
+
 // Point d'atterrissage apres la redirection navigateur renvoyee par
 // accounts/views.py GoogleCallbackView. La session (cookie) est deja creee
 // cote backend a ce stade : il suffit de recuperer le profil et de le
@@ -25,6 +28,7 @@ export default function GoogleAuthCompletePage() {
   const { login } = useAuth();
   const [searchParams] = useSearchParams();
   const [error, setError] = useState(searchParams.get("error") || "");
+  const actualRole = searchParams.get("actual_role");
   const ranOnce = useRef(false);
 
   useEffect(() => {
@@ -50,10 +54,15 @@ export default function GoogleAuthCompletePage() {
           <>
             <h1 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Connexion impossible</h1>
             <p className="text-gray-600 dark:text-slate-400 mb-6">
-              {ERROR_MESSAGES[error] || "Une erreur est survenue."}
+              {error === "role_mismatch"
+                ? `Ce compte Google est déjà associé à un profil ${ROLE_LABEL[actualRole] || actualRole}. Connectez-vous depuis l'espace correspondant, ou utilisez un autre compte Google.`
+                : ERROR_MESSAGES[error] || "Une erreur est survenue."}
             </p>
-            <Link to="/auth" className="text-[#2563eb] font-semibold hover:underline">
-              Retour à la connexion
+            <Link
+              to={error === "role_mismatch" ? ROLE_LOGIN_PATH[actualRole] || "/auth" : "/auth"}
+              className="text-[#2563eb] font-semibold hover:underline"
+            >
+              {error === "role_mismatch" ? `Aller à l'espace ${ROLE_LABEL[actualRole] || ""}` : "Retour à la connexion"}
             </Link>
           </>
         ) : (
