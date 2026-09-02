@@ -21,6 +21,11 @@ class User(AbstractUser):
     # Tous : photo de profil
     photo_profil = models.ImageField(upload_to="profiles/", blank=True, null=True)
 
+    # Email verifie par OTP a l'inscription (voir OtpCode ci-dessous).
+    # Les comptes crees hors auto-inscription (createsuperuser, admin Django)
+    # sont exemptes de cette verification, voir LoginView.
+    email_verified = models.BooleanField(default=False)
+
     def __str__(self):
         if self.role == "recruteur":
             return self.company_name or self.full_name or self.username
@@ -29,8 +34,16 @@ class User(AbstractUser):
 
 # 🔑 Modèle pour stocker les OTP (mot de passe oublié, vérification email, etc.)
 class PasswordResetCode(models.Model):
+    PURPOSE_PASSWORD_RESET = "password_reset"
+    PURPOSE_EMAIL_VERIFICATION = "email_verification"
+    PURPOSE_CHOICES = [
+        (PURPOSE_PASSWORD_RESET, "Reinitialisation mot de passe"),
+        (PURPOSE_EMAIL_VERIFICATION, "Verification email"),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reset_codes")
     code = models.CharField(max_length=6)  # ex: "123456"
+    purpose = models.CharField(max_length=20, choices=PURPOSE_CHOICES, default=PURPOSE_PASSWORD_RESET)
     created_at = models.DateTimeField(default=timezone.now)
 
     def is_expired(self):
@@ -38,4 +51,4 @@ class PasswordResetCode(models.Model):
         return (timezone.now() - self.created_at).total_seconds() > 900  # 900s = 15min
 
     def __str__(self):
-        return f"Code {self.code} pour {self.user.username}"
+        return f"Code {self.code} pour {self.user.username} ({self.purpose})"

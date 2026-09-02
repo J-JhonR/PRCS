@@ -1,5 +1,5 @@
 import logging
-import random
+import secrets
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.password_validation import validate_password
@@ -30,6 +30,39 @@ MAX_CV_SIZE = 5 * 1024 * 1024
 
 class PasswordResetThrottle(AnonRateThrottle):
     scope = "password_reset"
+
+
+def generate_otp():
+    # secrets (CSPRNG) plutot que random (PRNG previsible, impropre a un
+    # usage de securite) : un OTP genere avec `random` peut etre devine en
+    # observant d'autres tirages du meme generateur.
+    return f"{secrets.randbelow(1_000_000):06d}"
+
+
+def send_verification_code(user):
+    PasswordResetCode.objects.filter(
+        user=user, purpose=PasswordResetCode.PURPOSE_EMAIL_VERIFICATION
+    ).delete()
+    otp = generate_otp()
+    PasswordResetCode.objects.create(
+        user=user, code=otp, purpose=PasswordResetCode.PURPOSE_EMAIL_VERIFICATION
+    )
+    try:
+        send_mail(
+            subject="Verifiez votre adresse email - PRCS",
+            message=f"Votre code de verification est : {otp}\nIl expire dans 15 minutes.",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            fail_silently=False,
+        )
+    except Exception:
+        logger.exception("Echec d'envoi de l'email de verification")
+
+
+def is_verification_exempt(user):
+    # Comptes crees hors auto-inscription (createsuperuser, admin Django) :
+    # jamais passes par le flux d'inscription, donc pas de code a verifier.
+    return user.is_superuser or user.role == "admin"
 
 
 def build_user_payload(user, request=None):
@@ -151,11 +184,12 @@ class RegisterView(APIView):
                 cv=cv,
             )
 
-            login(request, user)
+            send_verification_code(user)
             return Response(
                 {
-                    "message": "Utilisateur cree avec succes",
-                    "user": build_user_payload(user, request),
+                    "message": "Compte cree. Verifiez votre email pour activer votre compte.",
+                    "email": user.email,
+                    "requires_verification": True,
                 },
                 status=status.HTTP_201_CREATED,
             )
@@ -186,6 +220,16 @@ class LoginView(APIView):
             return Response(
                 {"error": "Identifiants invalides"},
                 status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        if not user.email_verified and not is_verification_exempt(user):
+            return Response(
+                {
+                    "error": "Verifiez votre email avant de vous connecter.",
+                    "requires_verification": True,
+                    "email": user.email,
+                },
+                status=status.HTTP_403_FORBIDDEN,
             )
 
         login(request, user)
@@ -222,9 +266,13 @@ class PasswordResetRequestView(APIView):
 
         user = User.objects.filter(email=identifier).first()
         if user:
-            otp = str(random.randint(100000, 999999))
-            PasswordResetCode.objects.filter(user=user).delete()
-            PasswordResetCode.objects.create(user=user, code=otp)
+            otp = generate_otp()
+            PasswordResetCode.objects.filter(
+                user=user, purpose=PasswordResetCode.PURPOSE_PASSWORD_RESET
+            ).delete()
+            PasswordResetCode.objects.create(
+                user=user, code=otp, purpose=PasswordResetCode.PURPOSE_PASSWORD_RESET
+            )
 
             try:
                 send_mail(
@@ -256,7 +304,9 @@ class PasswordResetVerifyView(APIView):
 
         user = User.objects.filter(email=email).first()
         reset_code = (
-            PasswordResetCode.objects.filter(user=user).order_by("-created_at").first()
+            PasswordResetCode.objects.filter(
+                user=user, purpose=PasswordResetCode.PURPOSE_PASSWORD_RESET
+            ).order_by("-created_at").first()
             if user
             else None
         )
@@ -283,7 +333,9 @@ class PasswordResetConfirmView(APIView):
 
         user = User.objects.filter(email=email).first()
         reset_code = (
-            PasswordResetCode.objects.filter(user=user).order_by("-created_at").first()
+            PasswordResetCode.objects.filter(
+                user=user, purpose=PasswordResetCode.PURPOSE_PASSWORD_RESET
+            ).order_by("-created_at").first()
             if user
             else None
         )
@@ -300,9 +352,82 @@ class PasswordResetConfirmView(APIView):
 
         user.set_password(new_password)
         user.save()
-        PasswordResetCode.objects.filter(user=user).delete()
+        PasswordResetCode.objects.filter(
+            user=user, purpose=PasswordResetCode.PURPOSE_PASSWORD_RESET
+        ).delete()
 
         return Response({"message": "Mot de passe reinitialise"}, status=status.HTTP_200_OK)
+
+
+class EmailVerificationRequestView(APIView):
+    """Renvoie un nouveau code de verification (ex: code expire, email non recu)."""
+
+    permission_classes = [permissions.AllowAny]
+    throttle_classes = [PasswordResetThrottle]
+
+    GENERIC_RESPONSE = {
+        "message": "Si un compte existe et n'est pas encore verifie, un code a ete envoye.",
+    }
+
+    def post(self, request):
+        email = (request.data.get("email") or "").strip().lower()
+        if not email:
+            return Response({"error": "Email requis"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.filter(email=email).first()
+        if user and not user.email_verified and not is_verification_exempt(user):
+            send_verification_code(user)
+
+        return Response(self.GENERIC_RESPONSE, status=status.HTTP_200_OK)
+
+
+class EmailVerificationConfirmView(APIView):
+    permission_classes = [permissions.AllowAny]
+    throttle_classes = [PasswordResetThrottle]
+
+    def post(self, request):
+        email = (request.data.get("email") or "").strip().lower()
+        code = (request.data.get("code") or "").strip()
+
+        if not email or not code:
+            return Response(
+                {"error": "Email et code requis"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = User.objects.filter(email=email).first()
+        verification_code = (
+            PasswordResetCode.objects.filter(
+                user=user, purpose=PasswordResetCode.PURPOSE_EMAIL_VERIFICATION
+            ).order_by("-created_at").first()
+            if user
+            else None
+        )
+        if (
+            not user
+            or not verification_code
+            or verification_code.is_expired()
+            or verification_code.code != code
+        ):
+            return Response(
+                {"error": "Code invalide ou expire"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user.email_verified = True
+        user.save(update_fields=["email_verified"])
+        PasswordResetCode.objects.filter(
+            user=user, purpose=PasswordResetCode.PURPOSE_EMAIL_VERIFICATION
+        ).delete()
+
+        login(request, user)
+        return Response(
+            {
+                "message": "Email verifie",
+                "user": build_user_payload(user, request),
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class UserProfileView(APIView):

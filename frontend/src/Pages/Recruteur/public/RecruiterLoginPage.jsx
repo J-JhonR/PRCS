@@ -26,6 +26,11 @@ export default function RecruiterLoginPage() {
   const [otpCode, setOtpCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
+  const [verifyEmail, setVerifyEmail] = useState("");
+  const [verifyCode, setVerifyCode] = useState("");
+  const [verifyLoading, setVerifyLoading] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+
   useEffect(() => {
     if (isLoggedIn) {
       navigate(location.state?.from || HOME_BY_ROLE[user?.role] || "/recruteur/app", { replace: true });
@@ -45,9 +50,58 @@ export default function RecruiterLoginPage() {
       const data = await apiJSON("/api/accounts/login/", { method: "POST", body: form });
       login(data.user, location.state?.from || HOME_BY_ROLE[data.user?.role] || "/recruteur/app");
     } catch (err) {
+      if (err.data?.requires_verification) {
+        setVerifyEmail(err.data.email || form.email);
+        setError("Votre email n'est pas encore vérifié. Entrez le code reçu ou demandez-en un nouveau.");
+        return;
+      }
       setError(err.message || "Email ou mot de passe invalide.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleVerifySubmit = async (event) => {
+    event.preventDefault();
+    if (!verifyCode.trim()) {
+      setError("Entrez le code reçu par email.");
+      return;
+    }
+    try {
+      setVerifyLoading(true);
+      setError("");
+      const data = await apiJSON("/api/accounts/verify-email-confirm/", {
+        method: "POST",
+        body: { email: verifyEmail, code: verifyCode.trim() },
+      });
+      login(data.user, "/recruteur/app");
+    } catch (err) {
+      setError(err.message || "Code invalide ou expiré.");
+    } finally {
+      setVerifyLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (resendCooldown > 0) return;
+    try {
+      setVerifyLoading(true);
+      await apiJSON("/api/accounts/verify-email-request/", { method: "POST", body: { email: verifyEmail } });
+      setError("");
+      setResendCooldown(30);
+      const timer = setInterval(() => {
+        setResendCooldown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } catch (err) {
+      setError(err.message || "Impossible d'envoyer le code.");
+    } finally {
+      setVerifyLoading(false);
     }
   };
 
@@ -104,6 +158,65 @@ export default function RecruiterLoginPage() {
 
       <div className="flex flex-1 justify-center items-center p-6">
         <div className="bg-white dark:bg-slate-900 shadow-lg rounded-2xl p-8 w-full max-w-md">
+          {verifyEmail ? (
+            <>
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-white text-center mb-2">
+                Vérifiez votre email
+              </h2>
+              <p className="text-center text-gray-600 dark:text-slate-400 mb-6">
+                Code envoyé à <span className="font-semibold text-gray-800 dark:text-white">{verifyEmail}</span>
+              </p>
+
+              {error && (
+                <div className="mb-4 rounded-xl px-4 py-3 text-sm font-medium bg-red-50 text-red-700 border border-red-100 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/20">
+                  {error}
+                </div>
+              )}
+
+              <form onSubmit={handleVerifySubmit} className="space-y-4">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={6}
+                  placeholder="Code à 6 chiffres"
+                  value={verifyCode}
+                  onChange={(event) => setVerifyCode(event.target.value)}
+                  className="w-full text-center tracking-[0.5em] text-lg border rounded-lg px-3 py-3 focus:ring-2 focus:ring-[#2563eb] dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={verifyLoading}
+                  className="w-full bg-[#2563eb] text-white py-3 rounded-lg font-semibold hover:bg-[#1741a6] transition disabled:opacity-70"
+                >
+                  {verifyLoading ? "Vérification..." : "Valider le code"}
+                </button>
+              </form>
+
+              <div className="flex items-center justify-between mt-6 text-sm">
+                <button
+                  type="button"
+                  onClick={handleResendVerification}
+                  disabled={verifyLoading || resendCooldown > 0}
+                  className="text-[#2563eb] hover:underline disabled:opacity-50 disabled:no-underline"
+                >
+                  {resendCooldown > 0 ? `Renvoyer (${resendCooldown}s)` : "Renvoyer le code"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setVerifyEmail("");
+                    setVerifyCode("");
+                    setError("");
+                  }}
+                  className="text-gray-500 hover:underline"
+                >
+                  Retour
+                </button>
+              </div>
+            </>
+          ) : (
+          <>
           <h2 className="text-2xl font-bold text-gray-800 dark:text-white text-center mb-2">
             Connexion recruteur
           </h2>
@@ -173,6 +286,8 @@ export default function RecruiterLoginPage() {
             <FaBuilding className="shrink-0 text-blue-700 dark:text-blue-400" />
             <p>Réservé aux entreprises et recruteurs enregistrés sur PRCS.</p>
           </div>
+          </>
+          )}
         </div>
       </div>
 

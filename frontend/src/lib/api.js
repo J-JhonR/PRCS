@@ -41,7 +41,10 @@ export async function apiFetch(path, options = {}) {
 async function parseResponse(response) {
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(data.error || data.detail || "Erreur de communication");
+    const err = new Error(data.error || data.detail || "Erreur de communication");
+    err.data = data;
+    err.status = response.status;
+    throw err;
   }
   return data;
 }

@@ -43,6 +43,11 @@ export default function AuthPage() {
   const [newPwd2, setNewPwd2] = useState("");
   const [regPhotoFile, setRegPhotoFile] = useState(null);
 
+  const [verifyEmail, setVerifyEmail] = useState("");
+  const [verifyCode, setVerifyCode] = useState("");
+  const [verifyLoading, setVerifyLoading] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+
   useEffect(() => {
     if (isLoggedIn) {
       navigate(resolveRedirect(user), { replace: true });
@@ -59,7 +64,9 @@ export default function AuthPage() {
 
     const data = await res.json();
     if (!res.ok) {
-      throw new Error(data.error || data.detail || "Erreur de communication");
+      const err = new Error(data.error || data.detail || "Erreur de communication");
+      err.data = data;
+      throw err;
     }
     return data;
   };
@@ -72,7 +79,9 @@ export default function AuthPage() {
 
     const data = await res.json();
     if (!res.ok) {
-      throw new Error(data.error || data.detail || "Erreur de communication");
+      const err = new Error(data.error || data.detail || "Erreur de communication");
+      err.data = data;
+      throw err;
     }
     return data;
   };
@@ -154,8 +163,13 @@ export default function AuthPage() {
       }, REDIRECT_DELAY);
     } catch (err) {
       setAuthStep("");
-      showNotice("error", err.message || "Email ou mot de passe invalide.");
       setLoading(false);
+      if (err.data?.requires_verification) {
+        setVerifyEmail(err.data.email || login.email);
+        showNotice("error", "Votre email n'est pas encore vérifié. Entrez le code reçu ou demandez-en un nouveau.");
+        return;
+      }
+      showNotice("error", err.message || "Email ou mot de passe invalide.");
     }
   };
 
@@ -190,16 +204,63 @@ export default function AuthPage() {
       }
 
       const data = await postForm(`${API}/register/`, formData);
-      await assertBackendSession();
-      setAuthStep("Compte créé. Préparation de votre espace...");
-      showNotice("success", "Inscription réussie. Redirection en cours...");
-      setTimeout(() => {
-        loginUser(data.user, resolveRedirect(data.user));
-      }, REDIRECT_DELAY);
+      setAuthStep("");
+      setLoading(false);
+      setNotice(null);
+      setVerifyEmail(data.email || reg.email);
     } catch (err) {
       setAuthStep("");
       showNotice("error", err.message || "Impossible de créer le compte.");
       setLoading(false);
+    }
+  };
+
+  const handleVerifySubmit = async (e) => {
+    e.preventDefault();
+    if (!verifyCode.trim()) {
+      showNotice("error", "Entrez le code reçu par email.");
+      return;
+    }
+
+    try {
+      setVerifyLoading(true);
+      setNotice(null);
+      const data = await postJSON(`${API}/verify-email-confirm/`, {
+        email: verifyEmail,
+        code: verifyCode.trim(),
+      });
+      await assertBackendSession();
+      showNotice("success", "Email vérifié. Redirection en cours...");
+      setTimeout(() => {
+        loginUser(data.user, resolveRedirect(data.user));
+      }, REDIRECT_DELAY);
+    } catch (err) {
+      showNotice("error", err.message || "Code invalide ou expiré.");
+    } finally {
+      setVerifyLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (resendCooldown > 0) return;
+    try {
+      setVerifyLoading(true);
+      await postJSON(`${API}/verify-email-request/`, { email: verifyEmail });
+      showNotice("success", "Nouveau code envoyé si le compte existe et n'est pas déjà vérifié.");
+      setResendCooldown(30);
+      const timer = setInterval(() => {
+        setResendCooldown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } catch (err) {
+      showNotice("error", err.message || "Impossible d'envoyer le code.");
+    } finally {
+      setVerifyLoading(false);
     }
   };
 
@@ -300,6 +361,85 @@ export default function AuthPage() {
       </div>
 
       <div className="flex flex-1 justify-center items-center p-6">
+        {verifyEmail ? (
+          <MotionDiv
+            key="verify"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4 }}
+            className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md"
+          >
+            <h2 className="text-2xl font-bold text-gray-800 text-center mb-2">
+              Vérifiez votre email
+            </h2>
+            <p className="text-center text-gray-600 mb-6">
+              Un code à 6 chiffres a été envoyé à{" "}
+              <span className="font-semibold text-gray-800">{verifyEmail}</span>. Il expire dans 15
+              minutes.
+            </p>
+
+            <AnimatePresence>
+              {notice && (
+                <MotionDiv
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  className={`mb-4 rounded-xl px-4 py-3 text-sm font-medium ${
+                    notice.type === "success"
+                      ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
+                      : "bg-red-50 text-red-700 border border-red-100"
+                  }`}
+                >
+                  {notice.message}
+                </MotionDiv>
+              )}
+            </AnimatePresence>
+
+            <form onSubmit={handleVerifySubmit} className="space-y-4">
+              <input
+                type="text"
+                inputMode="numeric"
+                placeholder="Code à 6 chiffres"
+                value={verifyCode}
+                onChange={(e) => setVerifyCode(e.target.value)}
+                className="w-full text-center tracking-[0.5em] text-lg border rounded-lg px-3 py-3 focus:ring-2 focus:ring-[#2563eb]"
+                maxLength={6}
+                required
+              />
+
+              <button
+                type="submit"
+                disabled={verifyLoading}
+                className="w-full bg-[#2563eb] text-white py-3 rounded-lg font-semibold hover:bg-[#1741a6] transition disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                {verifyLoading ? "Vérification..." : "Valider le code"}
+              </button>
+            </form>
+
+            <div className="flex items-center justify-between mt-6 text-sm text-gray-600">
+              <button
+                type="button"
+                onClick={handleResendVerification}
+                disabled={verifyLoading || resendCooldown > 0}
+                className="text-[#2563eb] hover:underline disabled:opacity-50 disabled:no-underline"
+              >
+                {resendCooldown > 0 ? `Renvoyer le code (${resendCooldown}s)` : "Renvoyer le code"}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setVerifyEmail("");
+                  setVerifyCode("");
+                  setNotice(null);
+                }}
+                className="text-gray-500 hover:underline"
+              >
+                Retour
+              </button>
+            </div>
+          </MotionDiv>
+        ) : (
         <AnimatePresence mode="wait">
           {!isRegister ? (
             <MotionDiv
@@ -567,6 +707,7 @@ export default function AuthPage() {
             </MotionDiv>
           )}
         </AnimatePresence>
+        )}
       </div>
 
       <AnimatePresence>

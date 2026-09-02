@@ -34,6 +34,13 @@ export default function CreateCompanyAccountPage() {
   const [accountCreated, setAccountCreated] = useState(false);
   const [createdUser, setCreatedUser] = useState(null);
 
+  // Le compte doit etre verifie par email avant qu'une session existe (voir
+  // RegisterView cote backend) : on ne peut donc creer la fiche entreprise
+  // (qui exige d'etre authentifie) qu'apres cette etape.
+  const [needsVerification, setNeedsVerification] = useState(false);
+  const [verifyCode, setVerifyCode] = useState("");
+  const [resendCooldown, setResendCooldown] = useState(0);
+
   const handleAccountChange = (event) => {
     const { name, value } = event.target;
     setAccount((prev) => ({ ...prev, [name]: value }));
@@ -93,9 +100,14 @@ export default function CreateCompanyAccountPage() {
             role: "recruteur",
           },
         });
+        setAccountCreated(true);
+        if (data.requires_verification) {
+          setNeedsVerification(true);
+          setLoading(false);
+          return;
+        }
         user = data.user;
         setCreatedUser(user);
-        setAccountCreated(true);
       }
 
       await createCompany(user);
@@ -105,6 +117,103 @@ export default function CreateCompanyAccountPage() {
       setLoading(false);
     }
   };
+
+  const handleVerifySubmit = async (event) => {
+    event.preventDefault();
+    setError("");
+    if (!verifyCode.trim()) {
+      setError("Entrez le code recu par email.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const data = await apiJSON("/api/accounts/verify-email-confirm/", {
+        method: "POST",
+        body: { email: account.email, code: verifyCode.trim() },
+      });
+      setCreatedUser(data.user);
+      setNeedsVerification(false);
+      await createCompany(data.user);
+    } catch (err) {
+      setError(err.message || "Code invalide ou expire.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (resendCooldown > 0) return;
+    try {
+      setLoading(true);
+      await apiJSON("/api/accounts/verify-email-request/", {
+        method: "POST",
+        body: { email: account.email },
+      });
+      setError("");
+      setResendCooldown(30);
+      const timer = setInterval(() => {
+        setResendCooldown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } catch (err) {
+      setError(err.message || "Impossible d'envoyer le code.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (needsVerification) {
+    return (
+      <div className="min-h-screen bg-blue-50 dark:bg-slate-950 py-16 px-4 font-poppins flex items-center justify-center">
+        <div className="mx-auto w-full max-w-md">
+          <div className="text-center mb-6">
+            <img src="/logo.png" alt="PRCS" className="mx-auto h-14 mb-4" />
+            <h1 className="font-semibold text-3xl text-blue-800 dark:text-blue-300">Vérifiez votre email</h1>
+            <p className="mt-3 text-gray-600 dark:text-slate-400">
+              Un code à 6 chiffres a été envoyé à{" "}
+              <span className="font-semibold text-gray-800 dark:text-white">{account.email}</span>.
+            </p>
+          </div>
+
+          <form onSubmit={handleVerifySubmit} className="space-y-4 rounded-2xl bg-white dark:bg-slate-900 p-6 shadow-lg sm:p-8">
+            {error && <p className="rounded-2xl bg-red-50 p-4 text-red-700">{error}</p>}
+            <input
+              type="text"
+              inputMode="numeric"
+              maxLength={6}
+              placeholder="Code à 6 chiffres"
+              value={verifyCode}
+              onChange={(event) => setVerifyCode(event.target.value)}
+              className="w-full text-center tracking-[0.5em] text-lg border rounded-lg px-3 py-3 focus:ring-2 focus:ring-[#2563eb] dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+              required
+            />
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-700 px-6 py-3.5 font-semibold text-white hover:bg-blue-800 disabled:opacity-70"
+            >
+              {loading ? <FaSpinner className="animate-spin" /> : <FaRocket />}
+              Valider et créer mon entreprise
+            </button>
+            <button
+              type="button"
+              onClick={handleResendVerification}
+              disabled={loading || resendCooldown > 0}
+              className="w-full text-center text-sm text-blue-700 dark:text-blue-400 hover:underline disabled:opacity-50 disabled:no-underline"
+            >
+              {resendCooldown > 0 ? `Renvoyer le code (${resendCooldown}s)` : "Renvoyer le code"}
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-blue-50 dark:bg-slate-950 py-16 px-4 font-poppins">
